@@ -501,9 +501,9 @@
 // Replace SHEET_ID with your actual Google Sheet ID
 // You can find it in the URL of your Google Sheet:
 // https://docs.google.com/spreadsheets/d/SHEET_ID/edit
-const SHEET_ID   = '1UJneV61dvvghjDqAvgp9rDVEiCXwgHlKsz2cLb7WMDg';
-const FARMS_GID  = '1747878222';
-const CROPS_GID  = '1255744238';
+const SHEET_ID   = '1mBt3rBwg5IpLpwBW565FXQ1eCyYFNFekAkn-ckUu4jU';
+const FARMS_GID  = '1958301567';
+const CROPS_GID  = '1162252152';
 
 const FARMS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${FARMS_GID}`;
 const CROPS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CROPS_GID}`;
@@ -577,9 +577,9 @@ async function loadData() {
     ]);
 
     // Filter only approved farms
-    allFarms = farms.filter(f => String(f['Одобрено ✅']).toUpperCase() === 'TRUE');
+    allFarms = farms.filter(f => String(f['Одобрено']).toUpperCase() === 'TRUE');
     // Filter only approved crops
-    allCrops = crops.filter(c => String(c['Одобрено ✅']).toUpperCase() === 'TRUE');
+    allCrops = crops.filter(c => String(c['Одобрено']).toUpperCase() === 'TRUE');
 
     document.getElementById('loadingState').classList.remove('visible');
     render();
@@ -603,7 +603,7 @@ function render() {
   allFarms.forEach(farm => {
     // Get crops for this farm
     const farmID = String(farm['FermaID'] || farm['ID'] || '');
-    let crops = allCrops.filter(c => String(c['ID фермы ⬆'] || '').trim() === farmID.trim());
+    let crops = allCrops.filter(c => String(c['FermaID'] || '').trim() === farmID.trim());
 
     // Filter expired crops
     crops = crops.filter(c => {
