@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Сам збіраю — Фермы и дачи Минской области</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Geologica:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --earth:       #1e1408;
+      --bark:        #5c3d1e;
+      --leaf:        #3b6d11;
+      --sage:        #7aab6e;
+      --wheat:       #e8c97a;
+      --cream:       #f5efe0;
+      --mist:        #eaf3de;
+      --amber:       #faeeda;
+      --amber-dark:  #633806;
+      --red-soft:    #fcebeb;
+      --red-dark:    #791f1f;
+      --border:      rgba(61,107,52,.18);
+      --card-shadow: 0 2px 20px rgba(30,20,8,.08);
+      --radius:      16px;
+      --radius-sm:   10px;
+    }
+
+    /* ── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Geologica', sans-serif;
+      background: var(--cream);
+      color: var(--earth);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+    /* ── HERO ───────────────────────────────────────────── */
+    .hero {
+      background: var(--earth);
+      padding: 0 20px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 60% at 90% 70%, rgba(59,109,17,.3) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 50% at 5%  85%, rgba(232,201,122,.1) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 0 32px;
+      position: relative;
+      z-index: 2;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--wheat);
+      letter-spacing: .03em;
+    }
+    .logo em { font-style: italic; color: var(--sage); }
+    .nav-add {
+      background: var(--leaf);
+      color: var(--cream);
+      border-radius: 50px;
+      padding: 9px 20px;
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      transition: background .2s;
+    }
+    .nav-add:hover { background: var(--sage); }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 560px;
+      padding-bottom: 8px;
+    }
+    .hero-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 16px;
+    }
+    .hero-tag::before { content: ''; width: 30px; height: 1px; background: var(--sage); }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.6rem);
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    h1 em { font-style: italic; color: var(--wheat); }
+    .hero-sub {
+      font-size: .95rem;
+      font-weight: 300;
+      color: rgba(245,239,224,.6);
+      max-width: 420px;
+      margin-bottom: 32px;
+    }
+
+    /* ── SEARCH ─────────────────────────────────────────── */
+    .search-wrap {
+      display: flex;
+      align-items: center;
+      background: rgba(245,239,224,.07);
+      border: 1px solid rgba(245,239,224,.16);
+      border-radius: 50px;
+      padding: 6px 6px 6px 22px;
+      gap: 8px;
+      max-width: 500px;
+      backdrop-filter: blur(8px);
+    }
+    .search-input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--cream);
+      font-family: 'Geologica', sans-serif;
+      font-size: .9rem;
+      font-weight: 300;
+    }
+    .search-input::placeholder { color: rgba(245,239,224,.35); }
+    .search-clear {
+      color: rgba(245,239,224,.4);
+      font-size: 1.1rem;
+      padding: 0 4px;
+      display: none;
+      line-height: 1;
+    }
+    .search-clear.visible { display: block; }
+    .search-btn {
+      background: var(--leaf);
+      color: var(--cream);
+      border-radius: 50px;
+      padding: 10px 22px;
+      font-size: .8rem;
+      font-weight: 500;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+    .search-btn:hover { background: var(--sage); }
+
+    /* ── CHIPS ──────────────────────────────────────────── */
+    .chips-wrap {
+      background: var(--mist);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .chips-wrap::-webkit-scrollbar { display: none; }
+    .chip {
+      padding: 6px 16px;
+      border-radius: 50px;
+      border: 1px solid rgba(61,107,52,.25);
+      background: white;
+      font-size: .78rem;
+      color: var(--earth);
+      white-space: nowrap;
+      transition: all .18s;
+    }
+    .chip:hover, .chip.active {
+      background: var(--leaf);
+      border-color: var(--leaf);
+      color: white;
+    }
+
+    /* ── MAIN ───────────────────────────────────────────── */
+    .main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+    .count-label {
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(30,20,8,.4);
+      margin-bottom: 20px;
+    }
+
+    /* ── FARM CARD ──────────────────────────────────────── */
+    .farm-card {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid rgba(30,20,8,.07);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: transform .22s, box-shadow .22s;
+    }
+    .farm-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(30,20,8,.12);
+    }
+
+    .farm-header {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid rgba(30,20,8,.06);
+    }
+    .farm-photo {
+      width: 54px;
+      height: 54px;
+      border-radius: var(--radius-sm);
+      background: var(--mist);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .farm-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .farm-info { flex: 1; min-width: 0; }
+    .farm-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .farm-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.08rem;
+      font-weight: 500;
+      color: var(--earth);
+    }
+    .farm-badge {
+      background: var(--mist);
+      color: var(--leaf);
+      font-size: .65rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 50px;
+      border: 1px solid rgba(59,109,17,.2);
+    }
+    .farm-meta {
+      font-size: .78rem;
+      color: rgba(30,20,8,.45);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── CROP ROWS ──────────────────────────────────────── */
+    .crop-list { display: flex; flex-direction: column; }
+    .crop-row {
+      padding: 11px 18px;
+      border-bottom: 1px solid rgba(30,20,8,.05);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .crop-row:last-child { border-bottom: none; }
+    .crop-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .crop-name {
+      font-size: .92rem;
+      font-weight: 500;
+      color: var(--earth);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .crop-price {
+      font-size: .82rem;
+      color: var(--bark);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .crop-meta {
+      font-size: .76rem;
+      color: rgba(30,20,8,.45);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ── SEASON BADGES ──────────────────────────────────── */
+    .season-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 50px;
+      width: fit-content;
+    }
+    .season-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .season-ok   { background: var(--mist);     color: #27500a; }
+    .season-ok   .season-dot { background: #639922; }
+    .season-soon { background: var(--amber);    color: var(--amber-dark); }
+    .season-soon .season-dot { background: #ba7517; }
+    .season-last { background: var(--red-soft); color: var(--red-dark); }
+    .season-last .season-dot { background: #e24b4a; }
+
+    /* ── FARM FOOTER ────────────────────────────────────── */
+    .farm-footer {
+      display: flex;
+      gap: 10px;
+      padding: 12px 18px;
+      background: #fafaf8;
+      border-top: 1px solid rgba(30,20,8,.05);
+    }
+    .btn-map, .btn-contact {
+      flex: 1;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      font-size: .78rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all .18s;
+    }
+    .btn-map {
+      border: 1px solid rgba(30,20,8,.14);
+      color: var(--bark);
+    }
+    .btn-map:hover { border-color: var(--leaf); color: var(--leaf); }
+    .btn-contact {
+      border: 1px solid rgba(59,109,17,.35);
+      color: var(--leaf);
+    }
+    .btn-contact:hover { background: var(--mist); }
+
+    /* ── HIDDEN NOTE ────────────────────────────────────── */
+    .hidden-note {
+      padding: 7px 18px;
+      font-size: .72rem;
+      color: rgba(30,20,8,.4);
+      background: #fafaf8;
+      border-top: 1px solid rgba(30,20,8,.05);
+      display: none;
+      font-style: italic;
+    }
+
+    /* ── EMPTY / LOADING STATES ─────────────────────────── */
+    .state-box {
+      text-align: center;
+      padding: 60px 20px;
+      display: none;
+    }
+    .state-box.visible { display: block; }
+    .state-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .state-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 6px; }
+    .state-sub { font-size: .85rem; color: rgba(30,20,8,.5); margin-bottom: 20px; }
+    .state-reset {
+      background: none;
+      border: 1px solid rgba(30,20,8,.18);
+      border-radius: 50px;
+      padding: 9px 22px;
+      font-size: .82rem;
+      color: var(--bark);
+      transition: all .18s;
+    }
+    .state-reset:hover { border-color: var(--leaf); color: var(--leaf); }
+
+    .loading-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid var(--mist);
+      border-top-color: var(--leaf);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FOOTER ─────────────────────────────────────────── */
+    .site-footer {
+      background: var(--earth);
+      color: rgba(245,239,224,.45);
+      text-align: center;
+      padding: 28px 20px;
+      font-size: .78rem;
+      font-weight: 300;
+    }
+    .site-footer a { color: var(--sage); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 500px) {
+      .farm-footer { flex-direction: column; }
+      .btn-map, .btn-contact { flex: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<header class="hero">
+  <nav class="nav">
+    <div class="logo">🌿 <em>Сам</em> збіраю</div>
+    <a href="dobavit.html" class="nav-add">+ Добавить объявление</a>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-tag">Минская область · самосбор</div>
+    <h1>Свежее прямо<br/><em>с грядки</em></h1>
+    <p class="hero-sub">Фермы и дачи, где можно самому собрать фрукты и овощи. Без посредников.</p>
+    <div class="search-wrap">
+      <input
+        class="search-input"
+        id="searchInput"
+        type="text"
+        placeholder="Что ищете?"
+        oninput="handleSearch(this.value)"
+        autocomplete="off"
+      />
+      <button class="search-clear" id="clearBtn" onclick="clearSearch()" aria-label="Сбросить поиск">✕</button>
+      <button class="search-btn" onclick="handleSearch(document.getElementById('searchInput').value)">Найти</button>
+    </div>
+  </div>
+</header>
+
+<!-- ── FILTER CHIPS ──────────────────────────────────────── -->
+<div class="chips-wrap" id="chipsWrap">
+  <button class="chip active" onclick="chipFilter('')">Все</button>
+  <button class="chip" onclick="chipFilter('клубника')">🍓 Клубника</button>
+  <button class="chip" onclick="chipFilter('малина')">🫐 Малина</button>
+  <button class="chip" onclick="chipFilter('смородина')">🍇 Смородина</button>
+  <button class="chip" onclick="chipFilter('огурцы')">🥒 Огурцы</button>
+  <button class="chip" onclick="chipFilter('помидоры')">🍅 Помидоры</button>
+  <button class="chip" onclick="chipFilter('яблоки')">🍎 Яблоки</button>
+  <button class="chip" onclick="chipFilter('картофель')">🥔 Картофель</button>
+  <button class="chip" onclick="chipFilter('морковь')">🥕 Морковь</button>
+  <button class="chip" onclick="chipFilter('перец')">🫑 Перец</button>
+</div>
+
+<!-- ── MAIN CONTENT ──────────────────────────────────────── -->
+<main class="main">
+  <p class="count-label" id="countLabel">Загрузка…</p>
+
+  <!-- Loading state -->
+  <div class="state-box visible" id="loadingState">
+    <div class="loading-spinner"></div>
+    <p class="state-sub">Загружаем объявления…</p>
+  </div>
+
+  <!-- No results state -->
+  <div class="state-box" id="emptyState">
+    <div class="state-icon">🌱</div>
+    <p class="state-title">Ничего не найдено</p>
+    <p class="state-sub">Попробуйте другой запрос</p>
+    <button class="state-reset" onclick="clearSearch()">Сбросить поиск</button>
+  </div>
+
+  <!-- Farm cards container -->
+  <div id="farmsContainer"></div>
+</main>
+
+<!-- ── FOOTER ────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <p>🌿 Сам збіраю · Минская область · <a href="dobavit.html">Добавить объявление</a></p>
+</footer>
+
+<script>
+// ── CONFIG ─────────────────────────────────────────────────
+// Replace SHEET_ID with your actual Google Sheet ID
+// You can find it in the URL of your Google Sheet:
+// https://docs.google.com/spreadsheets/d/SHEET_ID/edit
+const SHEET_ID   = '1UJneV61dvvghjDqAvgp9rDVEiCXwgHlKsz2cLb7WMDg';
+const FARMS_GID  = '1747878222';
+const CROPS_GID  = '1255744238';
+
+const FARMS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${FARMS_GID}`;
+const CROPS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${CROPS_GID}`;
+
+// ── MONTHS ─────────────────────────────────────────────────
+const MONTHS = ['января','февраля','марта','апреля','мая','июня',
+                'июля','августа','сентября','октября','ноября','декабря'];
+
+function fmtDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return dt.getDate() + ' ' + MONTHS[dt.getMonth()];
+}
+
+// ── SEASON STATUS ───────────────────────────────────────────
+function seasonStatus(from, to) {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const start = from ? new Date(from) : null;
+  const end   = to   ? new Date(to)   : null;
+  if (!end) return null;
+  if (today > end) return { type: 'expired' };
+  const daysLeft = Math.round((end - today) / 86400000);
+  if (daysLeft === 0) return { type: 'last', label: 'Последний день — сегодня!' };
+  if (daysLeft <= 7) return { type: 'soon', label: `Заканчивается ${fmtDate(to)} · ${daysLeft} ${daysLeft===1?'день':daysLeft<5?'дня':'дней'}` };
+  return { type: 'ok', label: `До ${fmtDate(to)}` };
+}
+
+function seasonBadge(from, to) {
+  const s = seasonStatus(from, to);
+  if (!s || s.type === 'expired') return '';
+  const cls = s.type === 'ok' ? 'season-ok' : s.type === 'soon' ? 'season-soon' : 'season-last';
+  return `<span class="season-badge ${cls}"><span class="season-dot"></span>${s.label}</span>`;
+}
+
+// ── MAP BUTTON ──────────────────────────────────────────────
+function mapIcon(type) {
+  return type && type.toLowerCase().includes('яндекс') ? '🗺' : '📍';
+}
+
+// ── PARSE GOOGLE SHEETS JSON ────────────────────────────────
+function parseSheet(raw) {
+  const json = JSON.parse(raw.replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
+  const cols = json.table.cols.map(c => c.label);
+  return json.table.rows.map(row => {
+    const obj = {};
+    row.c.forEach((cell, i) => {
+      obj[cols[i]] = cell ? (cell.f || cell.v) : '';
+    });
+    return obj;
+  });
+}
+
+// ── STATE ───────────────────────────────────────────────────
+let allFarms  = [];
+let allCrops  = [];
+let query     = '';
+
+// ── FETCH DATA ──────────────────────────────────────────────
+async function fetchSheet(url) {
+  const res  = await fetch(url);
+  const text = await res.text();
+  return parseSheet(text);
+}
+
+async function loadData() {
+  try {
+    const [farms, crops] = await Promise.all([
+      fetchSheet(FARMS_URL),
+      fetchSheet(CROPS_URL)
+    ]);
+
+    // Filter only approved farms
+    allFarms = farms.filter(f => String(f['Одобрено ✅']).toUpperCase() === 'TRUE');
+    // Filter only approved crops
+    allCrops = crops.filter(c => String(c['Одобрено ✅']).toUpperCase() === 'TRUE');
+
+    document.getElementById('loadingState').classList.remove('visible');
+    render();
+  } catch(e) {
+    document.getElementById('loadingState').innerHTML =
+      '<div class="state-icon">⚠️</div><p class="state-title">Не удалось загрузить данные</p><p class="state-sub">Проверьте подключение к интернету и попробуйте снова.</p>';
+    console.error(e);
+  }
+}
+
+// ── RENDER ──────────────────────────────────────────────────
+function render() {
+  const container = document.getElementById('farmsContainer');
+  const emptyState = document.getElementById('emptyState');
+  const countLabel = document.getElementById('countLabel');
+  const q = query.toLowerCase().trim();
+
+  container.innerHTML = '';
+  let visibleFarms = 0;
+
+  allFarms.forEach(farm => {
+    // Get crops for this farm
+    const farmID = String(farm['FermaID'] || farm['ID'] || '');
+    let crops = allCrops.filter(c => String(c['ID фермы ⬆'] || '').trim() === farmID.trim());
+
+    // Filter expired crops
+    crops = crops.filter(c => {
+      const s = seasonStatus(c['Сезон с'], c['Сезон по']);
+      return !s || s.type !== 'expired';
+    });
+
+    if (crops.length === 0 && !q) return; // skip farms with no active crops
+    if (crops.length === 0 && q) return;
+
+    // Apply search filter at crop level
+    let visibleCrops = crops;
+    let hiddenCount  = 0;
+
+    if (q) {
+      const farmMatch = (farm['Название / Имя'] || '').toLowerCase().includes(q);
+      if (farmMatch) {
+        // show all crops if farm name matches
+        visibleCrops = crops;
+      } else {
+        visibleCrops = crops.filter(c => (c['Культура'] || '').toLowerCase().includes(q));
+        hiddenCount  = crops.length - visibleCrops.length;
+      }
+      if (visibleCrops.length === 0) return;
+    }
+
+    visibleFarms++;
+
+    // Build crop rows HTML
+    const cropRowsHTML = visibleCrops.map(c => {
+      const badge = seasonBadge(c['Сезон с'], c['Сезон по']);
+      const sched = [c['Дни'], c['Время']].filter(Boolean).join(', ');
+      const price = c['Условия оплаты'] || '';
+      const priceDetail = c['Цена (подробнее)'] || '';
+      const priceStr = priceDetail ? priceDetail : price;
+      return `
+        <div class="crop-row">
+          <div class="crop-top">
+            <span class="crop-name">${cropEmoji(c['Культура'])} ${c['Культура'] || ''}</span>
+            <span class="crop-price">${priceStr}</span>
+          </div>
+          ${sched ? `<div class="crop-meta">🕐 ${sched}</div>` : ''}
+          ${badge}
+        </div>`;
+    }).join('');
+
+    const hiddenNote = hiddenCount > 0
+      ? `<div class="hidden-note" style="display:block">Ещё ${hiddenCount} ${cropWord(hiddenCount)} от этого хозяйства</div>`
+      : '';
+
+    const photo = farm['Фото (URL)']
+      ? `<img src="${farm['Фото (URL)']}" alt="${farm['Название / Имя']}" loading="lazy" />`
+      : photoEmoji(farm['Тип хозяйства']);
+
+    const mapLabel = farm['Тип карты'] || 'Карта';
+    const mapLink  = farm['Ссылка на карту'] || '#';
+    const phone    = farm['Телефон'] || '';
+    const tg       = farm['Telegram'] || '';
+    const dist     = farm['Расстояние от Минска'] || '';
+
+    container.innerHTML += `
+      <article class="farm-card">
+        <div class="farm-header">
+          <div class="farm-photo">${photo}</div>
+          <div class="farm-info">
+            <div class="farm-name-row">
+              <span class="farm-name">${farm['Название / Имя'] || ''}</span>
+              <span class="farm-badge">${farm['Тип хозяйства'] || ''}</span>
+            </div>
+            ${dist ? `<div class="farm-meta">📍 ${dist}</div>` : ''}
+          </div>
+        </div>
+        <div class="crop-list">${cropRowsHTML}</div>
+        ${hiddenNote}
+        <div class="farm-footer">
+          ${mapLink && mapLink !== '#'
+            ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>`
+            : ''}
+          ${phone
+            ? `<a href="tel:${phone.replace(/\s/g,'')}" class="btn-contact">📞 ${phone}</a>`
+            : tg
+            ? `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">✈️ ${tg}</a>`
+            : ''}
+        </div>
+      </article>`;
+  });
+
+  // Update count
+  const total = allFarms.length;
+  if (q) {
+    countLabel.textContent = visibleFarms === 0
+      ? 'Нет результатов'
+      : `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
+  } else {
+    countLabel.textContent = `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
+  }
+
+  emptyState.classList.toggle('visible', visibleFarms === 0);
+}
+
+// ── HELPERS ─────────────────────────────────────────────────
+function cropEmoji(name) {
+  if (!name) return '🌿';
+  const n = name.toLowerCase();
+  if (n.includes('клубник')) return '🍓';
+  if (n.includes('малин'))   return '🫐';
+  if (n.includes('смородин'))return '🍇';
+  if (n.includes('огурц'))   return '🥒';
+  if (n.includes('помидор') || n.includes('томат')) return '🍅';
+  if (n.includes('перец'))   return '🫑';
+  if (n.includes('яблок'))   return '🍎';
+  if (n.includes('груш'))    return '🍐';
+  if (n.includes('слив'))    return '🍑';
+  if (n.includes('картоф'))  return '🥔';
+  if (n.includes('морков'))  return '🥕';
+  if (n.includes('кабачк'))  return '🥬';
+  if (n.includes('свёкл') || n.includes('свекл')) return '🫚';
+  if (n.includes('зелен'))   return '🌿';
+  return '🌱';
+}
+
+function photoEmoji(type) {
+  return type && type.toLowerCase().includes('ферм') ? '🚜' : '🏡';
+}
+
+function cropWord(n) {
+  if (n % 10 === 1 && n % 100 !== 11) return 'культура';
+  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'культуры';
+  return 'культур';
+}
+
+function farmWord(n) {
+  if (n % 10 === 1 && n % 100 !== 11) return 'хозяйство';
+  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'хозяйства';
+  return 'хозяйств';
+}
+
+// ── SEARCH ──────────────────────────────────────────────────
+function handleSearch(val) {
+  query = val;
+  const clearBtn = document.getElementById('clearBtn');
+  clearBtn.classList.toggle('visible', val.length > 0);
+  render();
+}
+
+function clearSearch() {
+  query = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').classList.remove('visible');
+  document.querySelectorAll('.chip').forEach((c,i) => c.classList.toggle('active', i===0));
+  render();
+}
+
+function chipFilter(term) {
+  query = term;
+  document.getElementById('searchInput').value = term;
+  document.getElementById('clearBtn').classList.toggle('visible', term.length > 0);
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.toggle('active', c.textContent.trim().toLowerCase().includes(term) || (term === '' && c.textContent.trim() === 'Все'));
+  });
+  render();
+}
+
+// ── INIT ────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>

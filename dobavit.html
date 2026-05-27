@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Добавить объявление — Сам збіраю</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Geologica:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --earth:  #1e1408;
+      --bark:   #5c3d1e;
+      --leaf:   #3b6d11;
+      --sage:   #7aab6e;
+      --wheat:  #e8c97a;
+      --cream:  #f5efe0;
+      --mist:   #eaf3de;
+      --border: rgba(61,107,52,.18);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Geologica', sans-serif;
+      background: var(--cream);
+      color: var(--earth);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    .hero {
+      background: var(--earth);
+      padding: 24px 24px 40px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--wheat);
+    }
+    .logo em { font-style: italic; color: var(--sage); }
+    .back-btn {
+      color: rgba(245,239,224,.5);
+      font-size: .82rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color .18s;
+    }
+    .back-btn:hover { color: var(--wheat); }
+
+    .hero-content { max-width: 560px; }
+    .hero-tag {
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 5vw, 2.6rem);
+      color: var(--cream);
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    h1 em { font-style: italic; color: var(--wheat); }
+    .hero-sub {
+      font-size: .88rem;
+      font-weight: 300;
+      color: rgba(245,239,224,.55);
+    }
+
+    .main {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 36px 24px 60px;
+    }
+
+    .info-card {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid rgba(30,20,8,.07);
+      box-shadow: 0 2px 20px rgba(30,20,8,.07);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .info-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+      color: var(--earth);
+    }
+
+    .steps { display: flex; flex-direction: column; gap: 14px; }
+    .step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--mist);
+      border: 1px solid var(--border);
+      color: var(--leaf);
+      font-size: .78rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-text { font-size: .88rem; font-weight: 300; color: rgba(30,20,8,.75); }
+    .step-text strong { font-weight: 500; color: var(--earth); }
+
+    .notice {
+      background: var(--mist);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: .82rem;
+      color: rgba(30,20,8,.65);
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .notice-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+    .form-btn {
+      display: block;
+      width: 100%;
+      background: var(--leaf);
+      color: white;
+      border-radius: 50px;
+      padding: 16px;
+      font-family: 'Geologica', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      transition: background .2s, transform .15s;
+      margin-bottom: 14px;
+    }
+    .form-btn:hover { background: var(--sage); transform: scale(1.01); }
+
+    .form-sub {
+      text-align: center;
+      font-size: .78rem;
+      color: rgba(30,20,8,.4);
+    }
+
+    /* Google Form embed */
+    .form-embed {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      min-height: 1200px;
+      display: block;
+      margin-top: 8px;
+    }
+
+    .site-footer {
+      background: var(--earth);
+      color: rgba(245,239,224,.4);
+      text-align: center;
+      padding: 24px 20px;
+      font-size: .78rem;
+    }
+    .site-footer a { color: var(--sage); }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="nav">
+    <div class="logo">🌿 <em>Сам</em> збіраю</div>
+    <a href="index.html" class="back-btn">← Назад к объявлениям</a>
+  </nav>
+  <div class="hero-content">
+    <div class="hero-tag">Для фермеров и дачников</div>
+    <h1>Добавить <em>объявление</em></h1>
+    <p class="hero-sub">Расскажите о своём урожае — и покупатели найдут вас сами.</p>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="info-card">
+    <h2>Как это работает</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Заполните форму ниже — это займёт около <strong>3 минут</strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Мы проверим объявление и <strong>опубликуем в течение 24 часов</strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Покупатели увидят ваше объявление и свяжутся с вами напрямую — <strong>через телефон или Telegram</strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">Когда сезон закончится, объявление <strong>скроется автоматически</strong>.</div>
+      </div>
+    </div>
+    <div class="notice">
+      <span class="notice-icon">💡</span>
+      <span>Каждая культура добавляется отдельно. Если у вас клубника и огурцы — заполните форму дважды. Так покупатели смогут найти каждый продукт отдельно.</span>
+    </div>
+  </div>
+
+  <!-- 
+    ИНСТРУКЦИЯ ДЛЯ НАСТРОЙКИ:
+    Замените src ниже на ссылку вашей Google Формы.
+    Чтобы получить ссылку для встраивания:
+    1. Откройте вашу Google Форму
+    2. Нажмите «Отправить»
+    3. Выберите вкладку «<>» (Встроить)
+    4. Скопируйте ссылку из поля src="..."
+    5. Вставьте её вместо YOUR_GOOGLE_FORM_EMBED_URL_HERE
+  -->
+  <iframe
+    class="form-embed"
+    src="YOUR_GOOGLE_FORM_EMBED_URL_HERE"
+    frameborder="0"
+    marginheight="0"
+    marginwidth="0"
+    title="Форма добавления объявления"
+  >Загрузка…</iframe>
+
+</main>
+
+<footer class="site-footer">
+  <p>🌿 Сам збіраю · <a href="index.html">Все объявления</a></p>
+</footer>
+
+</body>
+</html>
