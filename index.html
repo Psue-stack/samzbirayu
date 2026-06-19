@@ -313,7 +313,8 @@
       border-top: 1px solid var(--border);
     }
     .btn-map {
-      padding: 9px 12px;
+      flex: 0 0 auto;
+      padding: 9px 16px;
       border-radius: var(--radius-sm);
       font-size: .76rem;
       font-weight: 500;
@@ -385,7 +386,6 @@
 
     @media (max-width: 500px) {
       .farm-footer { flex-wrap: wrap; }
-      .btn-map { flex: 1; }
     }
   </style>
 </head>
@@ -626,15 +626,11 @@ function render() {
       ? `<div class="farm-detail" id="detail-${farmID}">${desc}</div>`
       : '';
 
-    // Contact button — prefer phone, then telegram, then viber
-    let contactBtn = '';
-    if (phone) {
-      contactBtn = `<a href="tel:${phone.replace(/\s/g,'')}" class="btn-contact">📞 ${phone}</a>`;
-    } else if (tg) {
-      contactBtn = `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">✈️ ${tg}</a>`;
-    } else if (viber) {
-      contactBtn = `<a href="viber://chat?number=${viber.replace(/\s/g,'')}" class="btn-contact">💜 ${viber}</a>`;
-    }
+    // Contact buttons — show ALL methods the farmer provided
+    let contactBtns = '';
+    if (phone)  contactBtns += `<a href="tel:${phone.replace(/\s/g,'')}" class="btn-contact">📞 ${phone}</a>`;
+    if (tg)     contactBtns += `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">✈️ ${tg}</a>`;
+    if (viber)  contactBtns += `<a href="viber://chat?number=${viber.replace(/\s/g,'')}" class="btn-contact">💜 ${viber}</a>`;
 
     container.innerHTML += `
       <article class="farm-card">
@@ -655,7 +651,7 @@ function render() {
           ${mapLink && mapLink !== '#'
             ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>`
             : ''}
-          ${contactBtn}
+          ${contactBtns}
         </div>
       </article>`;
   });
