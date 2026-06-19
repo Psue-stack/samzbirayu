@@ -327,9 +327,7 @@
     }
     .btn-map:hover { border-color: var(--leaf); color: var(--leaf); }
     .btn-contact {
-      flex: 1;
-      min-width: 0;
-      padding: 9px 12px;
+      padding: 9px 16px;
       border-radius: var(--radius-sm);
       font-size: .76rem;
       font-weight: 500;
@@ -346,11 +344,11 @@
     .btn-contact:hover { background: var(--mist); }
 
     /* ── EMPTY / LOADING STATES ─────────────────────────── */
-    .state-box { text-align: center; padding: 60px 20px; display: none; }
+    .state-box { text-align: center; padding: 24px 20px; display: none; }
     .state-box.visible { display: block; }
     .state-icon { font-size: 2.5rem; margin-bottom: 12px; }
-    .state-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 6px; }
-    .state-sub { font-size: .85rem; color: rgba(30,20,8,.5); margin-bottom: 20px; }
+    .state-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; }
+    .state-sub { font-size: .95rem; color: rgba(30,20,8,.5); margin-bottom: 20px; }
     .state-reset {
       background: none;
       border: 1px solid var(--border);
@@ -662,7 +660,7 @@ function render() {
 
   if (q) {
     countLabel.textContent = visibleFarms === 0
-      ? 'Нет результатов'
+      ? ''
       : `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
   } else {
     countLabel.textContent = `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
