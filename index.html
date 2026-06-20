@@ -491,7 +491,7 @@ function seasonBadge(from, to) {
 }
 
 function mapIcon(type) {
-  return type && type.toLowerCase().includes('яндекс') ? '🗺' : '📍';
+  return type && type.toLowerCase().includes('яндекс') ? ICONS.yandex : ICONS.googlemaps;
 }
 
 function parseSheet(raw) {
@@ -505,6 +505,15 @@ function parseSheet(raw) {
     return obj;
   });
 }
+
+// ── BRAND ICONS (SVG, inline) ────────────────────────────────
+const ICONS = {
+  telegram: '<svg width="14" height="14" viewBox="0 0 24 24" fill="#229ED9" style="vertical-align:-2px"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.169 1.858-.896 6.728-1.27 8.926-.157.93-.46 1.24-.757 1.27-.644.06-1.13-.426-1.756-.836-.975-.638-1.528-1.036-2.475-1.66-.95-.626-.334-.97.207-1.535.142-.148 2.61-2.394 2.66-2.598a.197.197 0 0 0-.044-.166.21.21 0 0 0-.179-.014c-.075.018-3.187 2.026-3.337 2.122-.346.232-.659.34-.94.337-.31-.005-.91-.18-1.353-.33-.546-.182-.98-.28-.943-.59.02-.16.244-.327.673-.5 2.66-1.157 4.426-1.92 5.302-2.288 2.526-1.055 3.05-1.24 3.395-1.245.075-.001.244.018.354.108.092.077.117.18.13.252.013.07.029.232.016.36z"/></svg>',
+  viber: '<svg width="14" height="14" viewBox="0 0 24 24" fill="#7360F2" style="vertical-align:-2px"><path d="M12.03 0C9.28.013 4.65.494 2.18 2.946.32 4.81.06 7.51.03 10.93c-.03 2.86-.06 6.58 3.49 7.61v1.59c0 .94-.05 1.96.45 2.67.13.18.42.4.86.4.32 0 .65-.13.94-.39.62-.54 1.39-1.25 1.85-1.7 2.06.17 4.21-.18 6.07-1.02 4.35-1.97 5.5-6.1 5.59-9.99.08-3.32-.27-6.05-2.12-7.91C15.65.7 14.34.04 12.03 0zm.06 1.6c1.85.03 2.84.55 3.78 1.49 1.42 1.43 1.65 3.6 1.59 6.5-.08 3.34-1.05 6.66-4.53 8.18-1.66.73-3.61 1.04-5.46.84l-.31-.03-.22.21c-.4.39-1.02.97-1.55 1.45v-1.66l-.01-.43-.41-.13C2.36 17.3 1.55 14.56 1.58 11c.03-3.15.27-5.32 1.66-6.72 2.04-2.04 6.13-2.66 8.85-2.68zm-2.5 4.4c-.32 0-.59.27-.59.6 0 .32.27.59.59.59 2.45.04 4.44 2.04 4.49 4.5 0 .32.27.58.59.58h.01c.33 0 .59-.27.59-.6-.06-3.07-2.6-5.61-5.68-5.67zm-.16 2.1c-.3 0-.55.24-.56.54-.02.46.32.85.78.87 1.07.06 1.86.86 1.92 1.93.02.31.27.55.58.55h.03c.32-.02.56-.29.55-.6-.08-1.68-1.34-2.95-3.02-3.04-.09 0-.18-.01-.28.01zm-2.94 1.9c-.5 0-1.03.18-1.4.55-.5.5-.7 1.21-.6 1.92.36 2.42 1.8 4.5 3.84 5.74.63.39 1.39.51 2.1.32.5-.14.92-.46 1.18-.9l.5-.86c.18-.32.1-.71-.2-.93l-1.69-1.27c-.27-.2-.65-.18-.89.06l-.41.39c-.15.14-.38.16-.55.04-.91-.62-1.6-1.5-1.97-2.53-.08-.21 0-.44.18-.57l.45-.34c.27-.2.34-.57.16-.86l-1.04-1.7c-.17-.27-.49-.4-.8-.32-.02 0-.04.01-.06.02-.27.1-.55.16-.8.17z"/></svg>',
+  yandex: '<svg width="14" height="14" viewBox="0 0 24 24" fill="#FF0000" style="vertical-align:-2px"><circle cx="12" cy="12" r="12" fill="#FC3F1D"/><text x="12" y="17" font-size="14" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">Y</text></svg>',
+  googlemaps: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><path fill="#4285F4" d="M12 2C7.802 2 4 5.403 4 9.6c0 4.197 3.802 7.4 8 14.4 4.198-7 8-10.203 8-14.4C20 5.403 16.198 2 12 2z"/><circle cx="12" cy="9.5" r="3" fill="white"/></svg>',
+  phone: '<svg width="14" height="14" viewBox="0 0 24 24" fill="#3B6D11" style="vertical-align:-2px"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>'
+};
 
 let allFarms  = [];
 let allCrops  = [];
@@ -638,9 +647,9 @@ function render() {
 
     // Contact buttons — show ALL methods the farmer provided
     let contactBtns = '';
-    if (phone)  contactBtns += `<a href="tel:${phone.replace(/\s/g,'')}" class="btn-contact">📞 ${phone}</a>`;
-    if (tg)     contactBtns += `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">✈️ ${tg}</a>`;
-    if (viber)  contactBtns += `<a href="viber://chat?number=${viber.replace(/\s/g,'')}" class="btn-contact">💜 ${viber}</a>`;
+    if (phone)  contactBtns += `<a href="tel:${phone.replace(/\s/g,'')}" class="btn-contact">${ICONS.phone} ${phone}</a>`;
+    if (tg)     contactBtns += `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">${ICONS.telegram} ${tg}</a>`;
+    if (viber)  contactBtns += `<a href="viber://chat?number=${viber.replace(/\s/g,'')}" class="btn-contact">${ICONS.viber} ${viber}</a>`;
 
     container.innerHTML += `
       <article class="farm-card">
