@@ -65,6 +65,56 @@
     .notice.warn { background: #FAEEDA; color: #633806; }
     .notice-icon { font-size: .95rem; flex-shrink: 0; margin-top: 1px; }
 
+    /* ── ACTION SELECTOR ─────────────────────────────────── */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .action-card {
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      cursor: pointer;
+      font-family: 'Geologica', sans-serif;
+      transition: all .18s;
+    }
+    .action-card:hover { border-color: var(--leaf); }
+    .action-card.active {
+      background: var(--mist);
+      border-color: var(--leaf);
+    }
+    .action-icon { font-size: 1.6rem; }
+    .action-label {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--earth);
+      line-height: 1.35;
+    }
+    .action-hint {
+      background: var(--mist);
+      border-radius: 10px;
+      padding: 13px 15px;
+      font-size: .82rem;
+      color: rgba(30,20,8,.75);
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      transition: background .2s;
+    }
+    .action-hint.warn { background: #FAEEDA; color: #633806; }
+
+    @media (max-width: 480px) {
+      .action-grid { grid-template-columns: 1fr 1fr; }
+    }
+
     .form-embed {
       width: 100%;
       border: none;
@@ -95,43 +145,49 @@
 <main class="main">
 
   <div class="info-card">
-    <h2>Как это работает</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-text">Заполните форму ниже — это займёт около <strong>3 минут</strong>. Можно указать до трёх культур в одной заявке.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-text">Мы проверим объявление и <strong>опубликуем в течение 24 часов</strong>.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-text">Покупатели увидят ваше объявление и свяжутся с вами напрямую — <strong>через телефон, Telegram или Viber</strong>.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-text">Когда сезон закончится, объявление <strong>скроется автоматически</strong>.</div>
-      </div>
+    <h2>Что вы хотите сделать?</h2>
+    <div class="action-grid">
+      <button class="action-card active" onclick="selectAction('new')">
+        <span class="action-icon">🌱</span>
+        <span class="action-label">Подать новое объявление</span>
+      </button>
+      <button class="action-card" onclick="selectAction('update')">
+        <span class="action-icon">✏️</span>
+        <span class="action-label">Изменить цену, телефон или фото</span>
+      </button>
+      <button class="action-card" onclick="selectAction('close-crop')">
+        <span class="action-icon">🍓</span>
+        <span class="action-label">Закрыть одну культуру (распродано)</span>
+      </button>
+      <button class="action-card" onclick="selectAction('close-all')">
+        <span class="action-icon">🔒</span>
+        <span class="action-label">Закрыть всё объявление</span>
+      </button>
     </div>
 
-    <div class="notice warn">
-      <span class="notice-icon">✏️</span>
-      <span><strong>Нужно что-то изменить или закрыть объявление раньше?</strong> Просто заполните форму ещё раз с тем же названием хозяйства и укажите в поле «Описание», что именно нужно изменить — например «убрать клубнику» или «закрыть объявление, урожай закончился». Мы обновим данные в течение 24 часов.</span>
-    </div>
-
-    <div class="notice">
-      <span class="notice-icon">💡</span>
-      <span>Если у вас больше трёх культур одновременно — заполните форму повторно для оставшихся.</span>
+    <div class="action-hint" id="actionHint">
+      <span class="notice-icon">🌱</span>
+      <span>Заполните форму ниже — это займёт около <strong>3 минут</strong>. Можно указать до пяти культур в одной заявке. Мы проверим и опубликуем в течение <strong>24 часов</strong>.</span>
     </div>
   </div>
 
-  <!--
-    ИНСТРУКЦИЯ ДЛЯ НАСТРОЙКИ:
-    Замените src ниже на ссылку вашей Google Формы для встраивания.
-  -->
+  <div class="info-card">
+    <h2>Как с вами свяжутся покупатели</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Покупатели увидят ваше объявление на сайте и свяжутся с вами напрямую — <strong>через телефон, Telegram или Viber</strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Когда сезон культуры закончится по указанным датам, она <strong>скроется автоматически</strong> — остальные ваши культуры останутся видны.</div>
+      </div>
+    </div>
+  </div>
+
   <iframe
     class="form-embed"
+    id="formEmbed"
     src="YOUR_GOOGLE_FORM_EMBED_URL_HERE"
     frameborder="0"
     marginheight="0"
@@ -144,6 +200,63 @@
 <footer class="site-footer">
   <p>🌿 Сам збіраю · <a href="index.html">Все объявления</a></p>
 </footer>
+
+<script>
+// ── ACTION SELECTOR ──────────────────────────────────────────
+// Each action shows a different hint and (optionally) pre-fills
+// a hidden "Тип заявки" field in the Google Form via URL parameter.
+// To wire this up: in your Google Form, add a short-answer field
+// called "Тип заявки", get its pre-fill URL (⋮ → Get pre-filled
+// link), find the entry.XXXXXXX parameter, and use it below in
+// FORM_FIELD_ENTRY_ID so the selected action is recorded automatically.
+
+const FORM_BASE_URL = 'YOUR_GOOGLE_FORM_EMBED_URL_HERE';
+const FORM_FIELD_ENTRY_ID = 'entry.XXXXXXXXX'; // replace with your form's "Тип заявки" entry ID
+
+const ACTION_CONFIG = {
+  'new': {
+    hint: 'Заполните форму ниже — это займёт около <strong>3 минут</strong>. Можно указать до пяти культур в одной заявке. Мы проверим и опубликуем в течение <strong>24 часов</strong>.',
+    icon: '🌱',
+    warn: false,
+    value: 'Новое объявление'
+  },
+  'update': {
+    hint: 'Заполните форму ниже, указав <strong>то же название хозяйства</strong> и новые данные (цену, телефон, фото и т.д.). Мы обновим объявление в течение <strong>24 часов</strong>.',
+    icon: '✏️',
+    warn: false,
+    value: 'Изменить данные'
+  },
+  'close-crop': {
+    hint: 'Укажите <strong>то же название хозяйства</strong> и выберите культуру, которую нужно закрыть. Остальные ваши культуры останутся видны покупателям.',
+    icon: '🍓',
+    warn: true,
+    value: 'Закрыть одну культуру'
+  },
+  'close-all': {
+    hint: 'Укажите <strong>то же название хозяйства</strong>. Мы скроем всё объявление с сайта в течение <strong>24 часов</strong>.',
+    icon: '🔒',
+    warn: true,
+    value: 'Закрыть всё объявление'
+  }
+};
+
+function selectAction(key) {
+  document.querySelectorAll('.action-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.action-card[onclick="selectAction('${key}')"]`).classList.add('active');
+
+  const cfg = ACTION_CONFIG[key];
+  const hintBox = document.getElementById('actionHint');
+  hintBox.innerHTML = `<span class="notice-icon">${cfg.icon}</span><span>${cfg.hint}</span>`;
+  hintBox.classList.toggle('warn', cfg.warn);
+
+  // Pre-fill the Google Form's "Тип заявки" field via URL parameter, if configured
+  const iframe = document.getElementById('formEmbed');
+  if (FORM_FIELD_ENTRY_ID && FORM_FIELD_ENTRY_ID !== 'entry.XXXXXXXXX') {
+    const separator = FORM_BASE_URL.includes('?') ? '&' : '?';
+    iframe.src = `${FORM_BASE_URL}${separator}${FORM_FIELD_ENTRY_ID}=${encodeURIComponent(cfg.value)}`;
+  }
+}
+</script>
 
 </body>
 </html>
