@@ -135,24 +135,49 @@
     }
     .search-btn:hover { background: var(--sage); }
 
-    /* ── CHIPS ──────────────────────────────────────────── */
-    .chips-wrap {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 14px 20px;
+    /* ── CATEGORY TABS + DYNAMIC CHIPS ─────────────────── */
+    .filters-wrap { background: white; border-bottom: 1px solid var(--border); }
+    .cat-tabs {
+      padding: 14px 20px 0;
       display: flex;
       gap: 8px;
       overflow-x: auto;
       scrollbar-width: none;
     }
+    .cat-tabs::-webkit-scrollbar { display: none; }
+    .cat-tab {
+      padding: 7px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: var(--cream);
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--earth);
+      white-space: nowrap;
+      transition: all .18s;
+    }
+    .cat-tab:hover, .cat-tab.active {
+      background: var(--leaf);
+      border-color: var(--leaf);
+      color: white;
+    }
+    .chips-wrap {
+      padding: 10px 20px 14px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      min-height: 0;
+    }
+    .chips-wrap:empty { padding: 0; }
     .chips-wrap::-webkit-scrollbar { display: none; }
     .chip {
       padding: 6px 16px;
       border-radius: 50px;
       border: 1px solid var(--border);
-      background: var(--cream);
+      background: var(--mist);
+      color: #27500a;
       font-size: .78rem;
-      color: var(--earth);
       white-space: nowrap;
       transition: all .18s;
     }
@@ -161,6 +186,15 @@
       border-color: var(--leaf);
       color: white;
     }
+    .filters-empty {
+      display: none;
+      text-align: center;
+      padding: 26px 20px;
+    }
+    .filters-empty.visible { display: block; }
+    .filters-empty .state-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .filters-empty .state-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 4px; }
+    .filters-empty .state-sub { font-size: .85rem; color: rgba(30,20,8,.5); }
 
     /* ── MAIN ───────────────────────────────────────────── */
     .main {
@@ -416,20 +450,14 @@
   </div>
 </header>
 
-<div class="chips-wrap" id="chipsWrap">
-  <button class="chip active" onclick="chipFilter('')">Все</button>
-  <button class="chip" onclick="chipFilter('клубника')">🍓 Клубника</button>
-  <button class="chip" onclick="chipFilter('малина')">🍒 Малина</button>
-  <button class="chip" onclick="chipFilter('смородина')">🍇 Смородина</button>
-  <button class="chip" onclick="chipFilter('черника')">🟣 Черника</button>
-  <button class="chip" onclick="chipFilter('груша')">🍐 Груши</button>
-  <button class="chip" onclick="chipFilter('слива')">🍑 Сливы</button>
-  <button class="chip" onclick="chipFilter('огурцы')">🥒 Огурцы</button>
-  <button class="chip" onclick="chipFilter('помидоры')">🍅 Помидоры</button>
-  <button class="chip" onclick="chipFilter('яблоки')">🍎 Яблоки</button>
-  <button class="chip" onclick="chipFilter('картофель')">🥔 Картофель</button>
-  <button class="chip" onclick="chipFilter('морковь')">🥕 Морковь</button>
-  <button class="chip" onclick="chipFilter('перец')">🌶️ Перец</button>
+<div class="filters-wrap" id="filtersWrap">
+  <div class="cat-tabs" id="catTabs"></div>
+  <div class="chips-wrap" id="chipsWrap"></div>
+  <div class="filters-empty" id="filtersEmpty">
+    <div class="state-icon">🌱</div>
+    <p class="state-title">Объявлений пока нет</p>
+    <p class="state-sub">Загляните позже — сезон скоро начнётся</p>
+  </div>
 </div>
 
 <main class="main">
@@ -442,8 +470,8 @@
 
   <div class="state-box" id="emptyState">
     <div class="state-icon">🌱</div>
-    <p class="state-title">Ничего не найдено</p>
-    <p class="state-sub">Попробуйте другой запрос</p>
+    <p class="state-title" id="emptyStateTitle">Ничего не найдено</p>
+    <p class="state-sub">Возможно, есть другие культуры.</p>
     <button class="state-reset" onclick="clearSearch()">Сбросить поиск</button>
   </div>
 
@@ -515,10 +543,48 @@ const ICONS = {
   phone: '<svg width="14" height="14" viewBox="0 0 24 24" fill="#3B6D11" style="vertical-align:-2px"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>'
 };
 
+// ── CATEGORY DICTIONARY ──────────────────────────────────────
+// Each category lists crop keywords (matched against the "Культура" text, lowercase).
+// The displayed chip label/emoji for each crop comes from cropEmoji() below.
+const CATEGORIES = [
+  {
+    key: 'berries', label: 'Ягоды', icon: '🍓',
+    crops: ['клубник', 'земляник', 'малин', 'смородин', 'крыжовник', 'ежевик', 'черник', 'голубик', 'клюкв']
+  },
+  {
+    key: 'fruits', label: 'Фрукты', icon: '🍎',
+    crops: ['яблок', 'груш', 'слив', 'вишн', 'черешн']
+  },
+  {
+    key: 'veg', label: 'Овощи', icon: '🥒',
+    crops: ['огурц', 'помидор', 'томат', 'перец', 'кабачк', 'цукини', 'баклажан', 'тыкв', 'капуст', 'кольраб',
+            'свёкл', 'свекл', 'морков', 'картоф', 'топинамбур', 'редиск', 'лук', 'чеснок']
+  },
+  {
+    key: 'greens', label: 'Зелень', icon: '🌿',
+    crops: ['укроп', 'петрушк', 'руккол', 'салат', 'зелен']
+  },
+  {
+    key: 'legumes', label: 'Бобовые', icon: '🫘',
+    crops: ['фасол', 'боб', 'горох']
+  }
+];
+
+function findCategory(cropName) {
+  const n = (cropName || '').toLowerCase();
+  for (const cat of CATEGORIES) {
+    if (cat.crops.some(kw => n.includes(kw))) return cat;
+  }
+  return null;
+}
+
+
 let allFarms  = [];
 let allCrops  = [];
 let query     = '';
 let expandedFarms = new Set();
+let activeCategory = '';  // '' = no category chosen
+let activeCrop = '';      // '' = no specific crop chip chosen within category
 
 async function fetchSheet(url) {
   const res  = await fetch(url);
@@ -535,6 +601,7 @@ async function loadData() {
     allFarms = farms.filter(f => String(f['Одобрено']).toUpperCase() === 'TRUE');
     allCrops = crops.filter(c => String(c['Одобрено']).toUpperCase() === 'TRUE');
     document.getElementById('loadingState').classList.remove('visible');
+    renderFilters();
     render();
   } catch(e) {
     document.getElementById('loadingState').innerHTML =
@@ -552,6 +619,84 @@ function toggleHidden(farmId) {
 function toggleDetail(farmId) {
   const el = document.getElementById('detail-' + farmId);
   if (el) el.classList.toggle('open');
+}
+
+// ── ACTIVE (NON-EXPIRED) CROPS HELPER ───────────────────────
+function getActiveCrops() {
+  return allCrops.filter(c => {
+    const s = seasonStatus(c['Сезон с'], c['Сезон по']);
+    return !s || s.type !== 'expired';
+  });
+}
+
+// ── BUILD CATEGORY TABS + CROP CHIPS DYNAMICALLY ────────────
+function renderFilters() {
+  const catTabsEl   = document.getElementById('catTabs');
+  const chipsEl     = document.getElementById('chipsWrap');
+  const filtersEmptyEl = document.getElementById('filtersEmpty');
+  const activeCrops = getActiveCrops();
+
+  if (activeCrops.length === 0) {
+    catTabsEl.innerHTML = '';
+    chipsEl.innerHTML = '';
+    filtersEmptyEl.classList.add('visible');
+    return;
+  }
+  filtersEmptyEl.classList.remove('visible');
+
+  // Which categories actually have at least one active crop right now?
+  const categoriesPresent = CATEGORIES.filter(cat =>
+    activeCrops.some(c => findCategory(c['Культура']) === cat)
+  );
+
+  catTabsEl.innerHTML = categoriesPresent.map(cat => `
+    <button class="cat-tab ${activeCategory === cat.key ? 'active' : ''}" onclick="pickCategory('${cat.key}')">
+      ${cat.icon} ${cat.label}
+    </button>`).join('');
+
+  // If the previously active category no longer exists in the list, reset it
+  if (activeCategory && !categoriesPresent.some(c => c.key === activeCategory)) {
+    activeCategory = '';
+    activeCrop = '';
+  }
+
+  if (!activeCategory) {
+    chipsEl.innerHTML = '';
+    return;
+  }
+
+  // Build the set of distinct crop names within the active category
+  const cat = categoriesPresent.find(c => c.key === activeCategory);
+  const cropNames = [...new Set(
+    activeCrops
+      .filter(c => findCategory(c['Культура']) === cat)
+      .map(c => (c['Культура'] || '').trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, 'ru'));
+
+  chipsEl.innerHTML = cropNames.map(name => `
+    <button class="chip ${activeCrop === name.toLowerCase() ? 'active' : ''}" onclick="pickCrop('${name.toLowerCase().replace(/'/g, "\\'")}')">
+      ${cropEmoji(name)} ${name}
+    </button>`).join('');
+}
+
+function pickCategory(key) {
+  activeCategory = (activeCategory === key) ? '' : key;
+  activeCrop = '';
+  query = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').classList.remove('visible');
+  renderFilters();
+  render();
+}
+
+function pickCrop(name) {
+  activeCrop = (activeCrop === name) ? '' : name;
+  query = activeCrop;
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').classList.remove('visible');
+  renderFilters();
+  render();
 }
 
 function render() {
@@ -683,26 +828,55 @@ function render() {
     countLabel.textContent = `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
   }
 
+  document.getElementById('emptyStateTitle').textContent = activeCrop
+    ? `${capitalize(activeCrop)} сейчас не доступна`
+    : 'Ничего не найдено';
+
   emptyState.classList.toggle('visible', visibleFarms === 0);
+}
+
+function capitalize(s) {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
 
 function cropEmoji(name) {
   if (!name) return '🌿';
   const n = name.toLowerCase();
   if (n.includes('клубник')) return '🍓';
+  if (n.includes('земляник')) return '🍓';
   if (n.includes('малин'))   return '🍒';
   if (n.includes('смородин'))return '🍇';
+  if (n.includes('крыжовник')) return '🍇';
+  if (n.includes('ежевик'))  return '🍇';
   if (n.includes('черник'))  return '🟣';
+  if (n.includes('голубик')) return '🫐'.codePointAt ? '🟣' : '🟣';
+  if (n.includes('клюкв'))   return '🔴';
   if (n.includes('огурц'))   return '🥒';
   if (n.includes('помидор') || n.includes('томат')) return '🍅';
   if (n.includes('перец'))   return '🌶️';
   if (n.includes('яблок'))   return '🍎';
   if (n.includes('груш'))    return '🍐';
   if (n.includes('слив'))    return '🍑';
+  if (n.includes('вишн'))    return '🍒';
+  if (n.includes('черешн'))  return '🍒';
   if (n.includes('картоф'))  return '🥔';
   if (n.includes('морков'))  return '🥕';
-  if (n.includes('кабачк'))  return '🥬';
+  if (n.includes('кабачк') || n.includes('цукини')) return '🥬';
+  if (n.includes('баклажан')) return '🍆';
+  if (n.includes('тыкв'))    return '🎃';
+  if (n.includes('капуст'))  return '🥬';
+  if (n.includes('кольраб')) return '🥬';
   if (n.includes('свёкл') || n.includes('свекл')) return '🫚';
+  if (n.includes('топинамбур')) return '🥔';
+  if (n.includes('редиск'))  return '🔴';
+  if (n.includes('лук'))     return '🧅';
+  if (n.includes('чеснок'))  return '🧄';
+  if (n.includes('фасол'))   return '🫘';
+  if (n.includes('боб'))     return '🫘';
+  if (n.includes('горох'))   return '🫛';
+  if (n.includes('рукол'))   return '🌿';
+  if (n.includes('салат'))   return '🥗';
+  if (n.includes('петрушк') || n.includes('укроп')) return '🌿';
   if (n.includes('зелен'))   return '🌿';
   return '🌱';
 }
@@ -725,29 +899,23 @@ function farmWord(n) {
 
 function handleSearch(val) {
   query = val;
+  activeCategory = '';
+  activeCrop = '';
   expandedFarms.clear();
   const clearBtn = document.getElementById('clearBtn');
   clearBtn.classList.toggle('visible', val.length > 0);
+  renderFilters();
   render();
 }
 
 function clearSearch() {
   query = '';
+  activeCategory = '';
+  activeCrop = '';
   expandedFarms.clear();
   document.getElementById('searchInput').value = '';
   document.getElementById('clearBtn').classList.remove('visible');
-  document.querySelectorAll('.chip').forEach((c,i) => c.classList.toggle('active', i===0));
-  render();
-}
-
-function chipFilter(term) {
-  query = term;
-  expandedFarms.clear();
-  document.getElementById('searchInput').value = term;
-  document.getElementById('clearBtn').classList.toggle('visible', term.length > 0);
-  document.querySelectorAll('.chip').forEach(c => {
-    c.classList.toggle('active', c.textContent.trim().toLowerCase().includes(term) || (term === '' && c.textContent.trim() === 'Все'));
-  });
+  renderFilters();
   render();
 }
 
