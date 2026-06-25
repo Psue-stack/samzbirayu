@@ -135,22 +135,21 @@
     }
     .search-btn:hover { background: var(--sage); }
 
-    /* ── CATEGORY TABS + DYNAMIC CHIPS ─────────────────── */
-    .filters-wrap { background: white; border-bottom: 1px solid var(--border); }
+    /* ── CATEGORY TABS + DYNAMIC CHIPS (Option 2: centered, wrapped, wide gaps) ── */
+    .filters-wrap { background: white; border-bottom: 1px solid var(--border); padding: 16px 20px 18px; }
+    .filters-inner { max-width: 760px; margin: 0 auto; }
     .cat-tabs {
-      padding: 14px 20px 0;
       display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
     }
-    .cat-tabs::-webkit-scrollbar { display: none; }
     .cat-tab {
-      padding: 7px 16px;
+      padding: 8px 18px;
       border-radius: 50px;
       border: 1px solid var(--border);
       background: var(--cream);
-      font-size: .78rem;
+      font-size: .8rem;
       font-weight: 500;
       color: var(--earth);
       white-space: nowrap;
@@ -162,17 +161,15 @@
       color: white;
     }
     .chips-wrap {
-      padding: 10px 20px 14px;
       display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      min-height: 0;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
     }
-    .chips-wrap:empty { padding: 0; }
-    .chips-wrap::-webkit-scrollbar { display: none; }
+    .chips-wrap:empty { margin-top: 0; }
     .chip {
-      padding: 6px 16px;
+      padding: 7px 16px;
       border-radius: 50px;
       border: 1px solid var(--border);
       background: var(--mist);
@@ -189,7 +186,6 @@
     .filters-empty {
       display: none;
       text-align: center;
-      padding: 26px 20px;
     }
     .filters-empty.visible { display: block; }
     .filters-empty .state-icon { font-size: 1.8rem; margin-bottom: 8px; }
@@ -451,12 +447,14 @@
 </header>
 
 <div class="filters-wrap" id="filtersWrap">
-  <div class="cat-tabs" id="catTabs"></div>
-  <div class="chips-wrap" id="chipsWrap"></div>
-  <div class="filters-empty" id="filtersEmpty">
-    <div class="state-icon">🌱</div>
-    <p class="state-title">Объявлений пока нет</p>
-    <p class="state-sub">Загляните позже — сезон скоро начнётся</p>
+  <div class="filters-inner">
+    <div class="cat-tabs" id="catTabs"></div>
+    <div class="chips-wrap" id="chipsWrap"></div>
+    <div class="filters-empty" id="filtersEmpty">
+      <div class="state-icon">🌱</div>
+      <p class="state-title">Объявлений пока нет</p>
+      <p class="state-sub">Загляните позже — сезон скоро начнётся</p>
+    </div>
   </div>
 </div>
 
