@@ -547,11 +547,11 @@ const ICONS = {
 const CATEGORIES = [
   {
     key: 'berries', label: 'Ягоды', icon: '🍓',
-    crops: ['клубник', 'земляник', 'малин', 'смородин', 'крыжовник', 'ежевик', 'черник', 'голубик', 'клюкв']
+    crops: ['клубник', 'земляник', 'малин', 'смородин', 'крыжовник', 'ежевик', 'черник', 'голубик', 'клюкв', 'вишн', 'черешн']
   },
   {
     key: 'fruits', label: 'Фрукты', icon: '🍎',
-    crops: ['яблок', 'груш', 'слив', 'вишн', 'черешн']
+    crops: ['яблок', 'груш', 'слив']
   },
   {
     key: 'veg', label: 'Овощи', icon: '🥒',
@@ -563,7 +563,7 @@ const CATEGORIES = [
     crops: ['укроп', 'петрушк', 'руккол', 'салат', 'зелен']
   },
   {
-    key: 'legumes', label: 'Бобовые', icon: '🫘',
+    key: 'legumes', label: 'Бобовые', icon: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><path d="M12 2C8 2 5 5 5 10c0 7 4 12 7 12s7-5 7-12c0-5-3-8-7-8z" fill="#3B6D11"/><ellipse cx="9.5" cy="9" rx="1.9" ry="2.3" fill="#7AAB6E"/><ellipse cx="14" cy="13" rx="1.9" ry="2.3" fill="#7AAB6E"/><ellipse cx="10" cy="17" rx="1.7" ry="2.1" fill="#7AAB6E"/></svg>',
     crops: ['фасол', 'боб', 'горох']
   }
 ];
@@ -847,7 +847,7 @@ function cropEmoji(name) {
   if (n.includes('крыжовник')) return '🍇';
   if (n.includes('ежевик'))  return '🍇';
   if (n.includes('черник'))  return '🟣';
-  if (n.includes('голубик')) return '🫐'.codePointAt ? '🟣' : '🟣';
+  if (n.includes('голубик')) return '🟣';
   if (n.includes('клюкв'))   return '🔴';
   if (n.includes('огурц'))   return '🥒';
   if (n.includes('помидор') || n.includes('томат')) return '🍅';
@@ -869,12 +869,13 @@ function cropEmoji(name) {
   if (n.includes('редиск'))  return '🔴';
   if (n.includes('лук'))     return '🧅';
   if (n.includes('чеснок'))  return '🧄';
-  if (n.includes('фасол'))   return '🫘';
-  if (n.includes('боб'))     return '🫘';
-  if (n.includes('горох'))   return '🫛';
+  if (n.includes('фасол'))   return '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><ellipse cx="12" cy="12" rx="6.5" ry="3.2" fill="#C2560A"/><circle cx="8.2" cy="12" r="1.6" fill="#FAEEDA"/><circle cx="12" cy="12" r="1.6" fill="#FAEEDA"/><circle cx="15.8" cy="12" r="1.6" fill="#FAEEDA"/></svg>';
+  if (n.includes('боб'))     return '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><ellipse cx="12" cy="12" rx="6.5" ry="3.2" fill="#C2560A"/><circle cx="8.2" cy="12" r="1.6" fill="#FAEEDA"/><circle cx="12" cy="12" r="1.6" fill="#FAEEDA"/><circle cx="15.8" cy="12" r="1.6" fill="#FAEEDA"/></svg>';
+  if (n.includes('горох'))   return '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><ellipse cx="12" cy="12" rx="6.5" ry="3.2" fill="#3B6D11"/><circle cx="8.2" cy="12" r="1.6" fill="#EAF3DE"/><circle cx="12" cy="12" r="1.6" fill="#EAF3DE"/><circle cx="15.8" cy="12" r="1.6" fill="#EAF3DE"/></svg>';
   if (n.includes('рукол'))   return '🌿';
   if (n.includes('салат'))   return '🥗';
-  if (n.includes('петрушк') || n.includes('укроп')) return '🌿';
+  if (n.includes('укроп'))   return '<svg width="14" height="14" viewBox="0 0 36 36" style="vertical-align:-2px"><path d="M18 33c0-8 0-15 0-21" stroke="#2E7D32" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M18 12c-2.5-3-2.5-6.5 0-10M18 12c2.5-2.5 5-3.5 7.5-2.5M18 16.5c-2.5 1.8-5.5 1-7.5-1.5M18 21c2.5-1.8 5.5-1 7.5 1.5M18 25.5c-2.5 1-5 .5-6.5-1.8" stroke="#388E3C" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>';
+  if (n.includes('петрушк')) return '🌿';
   if (n.includes('зелен'))   return '🌿';
   return '🌱';
 }
