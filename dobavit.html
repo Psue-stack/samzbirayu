@@ -51,20 +51,6 @@
     .step-text { font-size: .87rem; font-weight: 300; color: rgba(30,20,8,.75); }
     .step-text strong { font-weight: 500; color: var(--earth); }
 
-    .notice {
-      background: var(--mist);
-      border-radius: 10px;
-      padding: 13px 15px;
-      font-size: .8rem;
-      color: rgba(30,20,8,.7);
-      margin-top: 18px;
-      display: flex;
-      gap: 9px;
-      align-items: flex-start;
-    }
-    .notice.warn { background: #FAEEDA; color: #633806; }
-    .notice-icon { font-size: .95rem; flex-shrink: 0; margin-top: 1px; }
-
     /* ── ACTION SELECTOR ─────────────────────────────────── */
     .action-grid {
       display: grid;
@@ -111,9 +97,13 @@
     }
     .action-hint.warn { background: #FAEEDA; color: #633806; }
 
-    @media (max-width: 480px) {
-      .action-grid { grid-template-columns: 1fr 1fr; }
-    }
+    /* ── BUYERS INFO — hidden once action selected ───────── */
+    .buyers-info { transition: all .2s; }
+    .buyers-info.hidden { display: none; }
+
+    /* ── FORM — hidden until action selected ─────────────── */
+    .form-wrap { display: none; }
+    .form-wrap.visible { display: block; }
 
     .form-embed {
       width: 100%;
@@ -122,6 +112,10 @@
       min-height: 1400px;
       display: block;
       margin-top: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .action-grid { grid-template-columns: 1fr 1fr; }
     }
 
     .site-footer { background: white; border-top: 1px solid var(--border); color: rgba(30,20,8,.4); text-align: center; padding: 22px 20px; font-size: .78rem; }
@@ -147,7 +141,7 @@
   <div class="info-card">
     <h2>Что вы хотите сделать?</h2>
     <div class="action-grid">
-      <button class="action-card active" onclick="selectAction('new')">
+      <button class="action-card" onclick="selectAction('new')">
         <span class="action-icon">🌱</span>
         <span class="action-label">Подать новое объявление</span>
       </button>
@@ -164,14 +158,10 @@
         <span class="action-label">Закрыть всё объявление</span>
       </button>
     </div>
-
-    <div class="action-hint" id="actionHint">
-      <span class="notice-icon">🌱</span>
-      <span>Заполните форму ниже — это займёт около <strong>3 минут</strong>. Можно указать до пяти культур в одной заявке. Мы проверим и опубликуем в течение <strong>24 часов</strong>.</span>
-    </div>
+    <div class="action-hint" id="actionHint" style="display:none;"></div>
   </div>
 
-  <div class="info-card">
+  <div class="info-card buyers-info" id="buyersInfo">
     <h2>Как с вами свяжутся покупатели</h2>
     <div class="steps">
       <div class="step">
@@ -185,15 +175,17 @@
     </div>
   </div>
 
-  <iframe
-    class="form-embed"
-    id="formEmbed"
-    src="https://docs.google.com/forms/d/e/1FAIpQLScsgf6wGa17-PMtrZvlzoWR5ig2KOLxqqE9ssCRtInTGYPDXA/viewform?embedded=true"
-    frameborder="0"
-    marginheight="0"
-    marginwidth="0"
-    title="Форма добавления объявления"
-  >Загрузка…</iframe>
+  <div class="form-wrap" id="formWrap">
+    <iframe
+      class="form-embed"
+      id="formEmbed"
+      src=""
+      frameborder="0"
+      marginheight="0"
+      marginwidth="0"
+      title="Форма добавления объявления"
+    >Загрузка…</iframe>
+  </div>
 
 </main>
 
@@ -202,20 +194,12 @@
 </footer>
 
 <script>
-// ── ACTION SELECTOR ──────────────────────────────────────────
-// Each action shows a different hint and (optionally) pre-fills
-// a hidden "Тип заявки" field in the Google Form via URL parameter.
-// To wire this up: in your Google Form, add a short-answer field
-// called "Тип заявки", get its pre-fill URL (⋮ → Get pre-filled
-// link), find the entry.XXXXXXX parameter, and use it below in
-// FORM_FIELD_ENTRY_ID so the selected action is recorded automatically.
-
 const FORM_BASE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScsgf6wGa17-PMtrZvlzoWR5ig2KOLxqqE9ssCRtInTGYPDXA/viewform?embedded=true';
-const FORM_FIELD_ENTRY_ID = 'entry.XXXXXXXXX'; // replace with your form's "Тип заявки" entry ID
+const FORM_FIELD_ENTRY_ID = 'entry.XXXXXXXXX';
 
 const ACTION_CONFIG = {
   'new': {
-    hint: 'Заполните форму ниже — это займёт около <strong>3 минут</strong>. Можно указать до пяти культур в одной заявке. Мы проверим и опубликуем в течение <strong>24 часов</strong>.',
+    hint: 'Заполните форму ниже — это займёт около <strong>3 минут</strong>. Мы проверим и опубликуем в течение <strong>24 часов</strong>.',
     icon: '🌱',
     warn: false,
     value: 'Новое объявление'
@@ -241,19 +225,30 @@ const ACTION_CONFIG = {
 };
 
 function selectAction(key) {
+  // Update active card
   document.querySelectorAll('.action-card').forEach(c => c.classList.remove('active'));
   document.querySelector(`.action-card[onclick="selectAction('${key}')"]`).classList.add('active');
 
+  // Show and update hint
   const cfg = ACTION_CONFIG[key];
   const hintBox = document.getElementById('actionHint');
-  hintBox.innerHTML = `<span class="notice-icon">${cfg.icon}</span><span>${cfg.hint}</span>`;
+  hintBox.style.display = 'flex';
+  hintBox.innerHTML = `<span style="flex-shrink:0;margin-top:1px;">${cfg.icon}</span><span>${cfg.hint}</span>`;
   hintBox.classList.toggle('warn', cfg.warn);
 
-  // Pre-fill the Google Form's "Тип заявки" field via URL parameter, if configured
+  // Hide buyers info card
+  document.getElementById('buyersInfo').classList.add('hidden');
+
+  // Show form
+  const formWrap = document.getElementById('formWrap');
+  formWrap.classList.add('visible');
+
+  // Load form with pre-fill if entry ID is configured
   const iframe = document.getElementById('formEmbed');
-  if (FORM_FIELD_ENTRY_ID && FORM_FIELD_ENTRY_ID !== 'entry.XXXXXXXXX') {
-    const separator = FORM_BASE_URL.includes('?') ? '&' : '?';
-    iframe.src = `${FORM_BASE_URL}${separator}${FORM_FIELD_ENTRY_ID}=${encodeURIComponent(cfg.value)}`;
+  if (FORM_FIELD_ENTRY_ID !== 'entry.XXXXXXXXX') {
+    iframe.src = `${FORM_BASE_URL}&${FORM_FIELD_ENTRY_ID}=${encodeURIComponent(cfg.value)}`;
+  } else {
+    iframe.src = FORM_BASE_URL;
   }
 }
 </script>
