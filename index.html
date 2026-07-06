@@ -35,280 +35,60 @@
     }
     a { color: inherit; text-decoration: none; }
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
-
-    /* ── HERO (light, centered) ──────────────────────────── */
-    .hero {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 22px 20px 26px;
-    }
-    .nav {
-      max-width: 760px;
-      margin: 0 auto 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      color: var(--leaf);
-      font-weight: 500;
-    }
-    .add-btn {
-      background: var(--leaf);
-      color: white;
-      border-radius: 50px;
-      padding: 9px 18px;
-      font-size: .8rem;
-      font-weight: 500;
-      white-space: nowrap;
-      transition: background .2s;
-    }
+    .hero { background: white; border-bottom: 1px solid var(--border); padding: 22px 20px 26px; }
+    .nav { max-width: 760px; margin: 0 auto 28px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--leaf); font-weight: 500; }
+    .add-btn { background: var(--leaf); color: white; border-radius: 50px; padding: 9px 18px; font-size: .8rem; font-weight: 500; white-space: nowrap; transition: background .2s; }
     .add-btn:hover { background: var(--sage); }
-
-    .hero-center {
-      max-width: 560px;
-      margin: 0 auto;
-      text-align: center;
-    }
-    .hero-tag {
-      font-size: .7rem;
-      font-weight: 500;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: var(--sage);
-      margin-bottom: 12px;
-    }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.9rem, 6vw, 2.8rem);
-      color: var(--earth);
-      line-height: 1.15;
-      margin-bottom: 10px;
-    }
+    .hero-center { max-width: 560px; margin: 0 auto; text-align: center; }
+    .hero-tag { font-size: .7rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; }
+    h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.9rem, 6vw, 2.8rem); color: var(--earth); line-height: 1.15; margin-bottom: 10px; }
     h1 em { font-style: italic; color: var(--leaf); }
-    .hero-sub {
-      font-size: .9rem;
-      font-weight: 300;
-      color: rgba(30,20,8,.55);
-      margin-bottom: 22px;
-    }
-
-    .search-wrap {
-      display: flex;
-      align-items: center;
-      background: var(--cream);
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 6px 6px 6px 18px;
-      gap: 8px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-    .search-input {
-      flex: 1;
-      background: none;
-      border: none;
-      outline: none;
-      color: var(--earth);
-      font-family: 'Geologica', sans-serif;
-      font-size: .9rem;
-    }
+    .hero-sub { font-size: .9rem; font-weight: 300; color: rgba(30,20,8,.55); margin-bottom: 22px; }
+    .search-wrap { display: flex; align-items: center; background: var(--cream); border: 1px solid var(--border); border-radius: 50px; padding: 6px 6px 6px 18px; gap: 8px; max-width: 500px; margin: 0 auto; }
+    .search-input { flex: 1; background: none; border: none; outline: none; color: var(--earth); font-family: 'Geologica', sans-serif; font-size: .9rem; }
     .search-input::placeholder { color: rgba(30,20,8,.35); }
-    .search-clear {
-      color: rgba(30,20,8,.35);
-      font-size: 1rem;
-      padding: 0 4px;
-      display: none;
-    }
+    .search-clear { color: rgba(30,20,8,.35); font-size: 1rem; padding: 0 4px; display: none; }
     .search-clear.visible { display: block; }
-    .search-btn {
-      background: var(--leaf);
-      color: white;
-      border-radius: 50px;
-      padding: 9px 20px;
-      font-size: .8rem;
-      font-weight: 500;
-      white-space: nowrap;
-      transition: background .2s;
-    }
+    .search-btn { background: var(--leaf); color: white; border-radius: 50px; padding: 9px 20px; font-size: .8rem; font-weight: 500; white-space: nowrap; transition: background .2s; }
     .search-btn:hover { background: var(--sage); }
-
-    /* ── CATEGORY TABS + DYNAMIC CHIPS (Option 2: centered, wrapped, wide gaps) ── */
     .filters-wrap { background: white; border-bottom: 1px solid var(--border); padding: 16px 20px 18px; }
     .filters-inner { max-width: 760px; margin: 0 auto; }
-    .cat-tabs {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-    .cat-tab {
-      padding: 8px 18px;
-      border-radius: 50px;
-      border: 1px solid var(--border);
-      background: var(--cream);
-      font-size: .8rem;
-      font-weight: 500;
-      color: var(--earth);
-      white-space: nowrap;
-      transition: all .18s;
-    }
-    .cat-tab:hover, .cat-tab.active {
-      background: var(--leaf);
-      border-color: var(--leaf);
-      color: white;
-    }
-    .chips-wrap {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
+    .cat-tabs { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .cat-tab { padding: 8px 18px; border-radius: 50px; border: 1px solid var(--border); background: var(--cream); font-size: .8rem; font-weight: 500; color: var(--earth); white-space: nowrap; transition: all .18s; }
+    .cat-tab:hover, .cat-tab.active { background: var(--leaf); border-color: var(--leaf); color: white; }
+    .chips-wrap { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
     .chips-wrap:empty { margin-top: 0; }
-    .chip {
-      padding: 7px 16px;
-      border-radius: 50px;
-      border: 1px solid var(--border);
-      background: var(--mist);
-      color: #27500a;
-      font-size: .78rem;
-      white-space: nowrap;
-      transition: all .18s;
-    }
-    .chip:hover, .chip.active {
-      background: var(--leaf);
-      border-color: var(--leaf);
-      color: white;
-    }
-    .filters-empty {
-      display: none;
-      text-align: center;
-    }
+    .chip { padding: 7px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--mist); color: #27500a; font-size: .78rem; white-space: nowrap; transition: all .18s; }
+    .chip:hover, .chip.active { background: var(--leaf); border-color: var(--leaf); color: white; }
+    .filters-empty { display: none; text-align: center; }
     .filters-empty.visible { display: block; }
     .filters-empty .state-icon { font-size: 1.8rem; margin-bottom: 8px; }
     .filters-empty .state-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 4px; }
     .filters-empty .state-sub { font-size: .85rem; color: rgba(30,20,8,.5); }
-
-    /* ── MAIN ───────────────────────────────────────────── */
-    .main {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 28px 20px 60px;
-    }
-    .count-label {
-      font-size: .72rem;
-      font-weight: 500;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: rgba(30,20,8,.4);
-      margin-bottom: 20px;
-    }
-
-    /* ── FARM CARD ──────────────────────────────────────── */
-    .farm-card {
-      background: white;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 16px rgba(30,20,8,.05);
-      margin-bottom: 20px;
-      overflow: hidden;
-      transition: transform .2s, box-shadow .2s;
-    }
-    .farm-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(30,20,8,.09);
-    }
-
-    .farm-header {
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      padding: 18px 18px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-    .farm-photo {
-      width: 52px;
-      height: 52px;
-      border-radius: var(--radius-sm);
-      background: var(--mist);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
+    .main { max-width: 760px; margin: 0 auto; padding: 28px 20px 60px; }
+    .count-label { font-size: .72rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: rgba(30,20,8,.4); margin-bottom: 20px; }
+    .farm-card { background: white; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 2px 16px rgba(30,20,8,.05); margin-bottom: 20px; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+    .farm-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(30,20,8,.09); }
+    .farm-header { display: flex; gap: 14px; align-items: flex-start; padding: 18px 18px 14px; border-bottom: 1px solid var(--border); }
+    .farm-photo { width: 52px; height: 52px; border-radius: var(--radius-sm); background: var(--mist); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; overflow: hidden; }
     .farm-photo img { width: 100%; height: 100%; object-fit: cover; }
     .farm-info { flex: 1; min-width: 0; }
-    .farm-name-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-      flex-wrap: wrap;
-    }
-    .farm-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem;
-      font-weight: 500;
-      color: var(--earth);
-    }
-    .farm-name.clickable {
-      cursor: pointer;
-      text-decoration: underline;
-      text-decoration-color: rgba(59,109,17,.35);
-      text-underline-offset: 3px;
-    }
+    .farm-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+    .farm-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 500; color: var(--earth); }
+    .farm-name.clickable { cursor: pointer; text-decoration: underline; text-decoration-color: rgba(59,109,17,.35); text-underline-offset: 3px; }
     .farm-name.clickable:hover { color: var(--leaf); }
-    .farm-badge {
-      background: var(--mist);
-      color: var(--leaf);
-      font-size: .65rem;
-      font-weight: 500;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      padding: 3px 9px;
-      border-radius: 50px;
-    }
-    .farm-meta {
-      font-size: .78rem;
-      color: rgba(30,20,8,.45);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* ── DETAIL PANEL (expandable) ─────────────────────── */
-    .farm-detail {
-      display: none;
-      padding: 14px 18px;
-      background: var(--mist);
-      border-bottom: 1px solid var(--border);
-      font-size: .85rem;
-      font-weight: 300;
-      color: rgba(30,20,8,.75);
-      line-height: 1.6;
-    }
+    .farm-badge { background: var(--mist); color: var(--leaf); font-size: .65rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 50px; }
+    .farm-meta { font-size: .78rem; color: rgba(30,20,8,.45); display: flex; align-items: center; gap: 4px; }
+    .farm-detail { display: none; padding: 14px 18px; background: var(--mist); border-bottom: 1px solid var(--border); font-size: .85rem; font-weight: 300; color: rgba(30,20,8,.75); line-height: 1.6; }
     .farm-detail.open { display: block; }
-
-    /* ── CROP ROWS ──────────────────────────────────────── */
     .crop-list { display: flex; flex-direction: column; }
-    .crop-row {
-      padding: 11px 18px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .crop-row { padding: 11px 18px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
     .crop-row:last-child { border-bottom: none; }
     .crop-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .crop-name { font-size: .92rem; font-weight: 500; color: var(--earth); display: flex; align-items: center; gap: 6px; }
     .crop-price { font-size: .82rem; color: var(--bark); white-space: nowrap; flex-shrink: 0; }
     .crop-meta { font-size: .76rem; color: rgba(30,20,8,.45); display: flex; align-items: center; gap: 5px; }
-
     .season-badge { display: inline-flex; align-items: center; gap: 5px; font-size: .7rem; font-weight: 500; padding: 3px 10px; border-radius: 50px; width: fit-content; }
     .season-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
     .season-ok   { background: var(--mist);     color: #27500a; }
@@ -317,107 +97,27 @@
     .season-soon .season-dot { background: #ba7517; }
     .season-last { background: var(--red-soft); color: var(--red-dark); }
     .season-last .season-dot { background: #e24b4a; }
-
-    /* ── HIDDEN CROPS — EXPANDABLE LINK ────────────────── */
-    .hidden-note {
-      padding: 9px 18px;
-      font-size: .78rem;
-      color: var(--leaf);
-      background: white;
-      border-top: 1px solid var(--border);
-      cursor: pointer;
-      display: none;
-      font-weight: 500;
-    }
+    .hidden-note { padding: 9px 18px; font-size: .78rem; color: var(--leaf); background: white; border-top: 1px solid var(--border); cursor: pointer; display: none; font-weight: 500; }
     .hidden-note:hover { background: var(--mist); }
     .hidden-note .chev { display: inline-block; transition: transform .2s; margin-left: 4px; }
     .hidden-note.expanded .chev { transform: rotate(180deg); }
-
-    /* ── FARM FOOTER ────────────────────────────────────── */
-    .farm-footer {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 12px 18px;
-      background: var(--cream);
-      border-top: 1px solid var(--border);
-    }
-    .btn-map {
-      flex: 0 0 auto;
-      padding: 9px 16px;
-      border-radius: var(--radius-sm);
-      font-size: .76rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      border: 1px solid var(--border);
-      color: var(--bark);
-      white-space: nowrap;
-      transition: all .18s;
-    }
+    .farm-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 12px 18px; background: var(--cream); border-top: 1px solid var(--border); }
+    .btn-map { flex: 0 0 auto; padding: 9px 16px; border-radius: var(--radius-sm); font-size: .76rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; border: 1px solid var(--border); color: var(--bark); white-space: nowrap; transition: all .18s; }
     .btn-map:hover { border-color: var(--leaf); color: var(--leaf); }
-    .btn-contact {
-      flex: 0 0 auto;
-      padding: 9px 16px;
-      border-radius: var(--radius-sm);
-      font-size: .76rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      border: 1px solid rgba(59,109,17,.35);
-      color: var(--leaf);
-      white-space: nowrap;
-      overflow: hidden;
-      transition: background .18s;
-    }
+    .btn-contact { flex: 0 0 auto; padding: 9px 16px; border-radius: var(--radius-sm); font-size: .76rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 5px; border: 1px solid rgba(59,109,17,.35); color: var(--leaf); white-space: nowrap; overflow: hidden; transition: background .18s; }
     .btn-contact:hover { background: var(--mist); }
-
-    /* ── EMPTY / LOADING STATES ─────────────────────────── */
     .state-box { text-align: center; padding: 24px 20px; display: none; }
     .state-box.visible { display: block; }
     .state-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .state-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; }
     .state-sub { font-size: .95rem; color: rgba(30,20,8,.5); margin-bottom: 20px; }
-    .state-reset {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 50px;
-      padding: 9px 22px;
-      font-size: .82rem;
-      color: var(--bark);
-      transition: all .18s;
-    }
+    .state-reset { background: none; border: 1px solid var(--border); border-radius: 50px; padding: 9px 22px; font-size: .82rem; color: var(--bark); transition: all .18s; }
     .state-reset:hover { border-color: var(--leaf); color: var(--leaf); }
-    .loading-spinner {
-      width: 36px; height: 36px;
-      border: 3px solid var(--mist);
-      border-top-color: var(--leaf);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: 0 auto 16px;
-    }
+    .loading-spinner { width: 36px; height: 36px; border: 3px solid var(--mist); border-top-color: var(--leaf); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── FOOTER ─────────────────────────────────────────── */
-    .site-footer {
-      background: white;
-      border-top: 1px solid var(--border);
-      color: rgba(30,20,8,.45);
-      text-align: center;
-      padding: 24px 20px;
-      font-size: .78rem;
-      font-weight: 300;
-    }
+    .site-footer { background: white; border-top: 1px solid var(--border); color: rgba(30,20,8,.45); text-align: center; padding: 24px 20px; font-size: .78rem; font-weight: 300; }
     .site-footer a { color: var(--leaf); }
-
-    @media (max-width: 500px) {
-      .farm-footer { flex-wrap: wrap; }
-    }
+    @media (max-width: 500px) { .farm-footer { flex-wrap: wrap; } }
   </style>
 </head>
 <body>
@@ -432,14 +132,7 @@
     <h1>Свежее прямо<br/><em>с грядки</em></h1>
     <p class="hero-sub">Фермы и дачи, где можно самому собрать фрукты и овощи. Без посредников.</p>
     <div class="search-wrap">
-      <input
-        class="search-input"
-        id="searchInput"
-        type="text"
-        placeholder="Что ищете?"
-        oninput="handleSearch(this.value)"
-        autocomplete="off"
-      />
+      <input class="search-input" id="searchInput" type="text" placeholder="Что ищете?" oninput="handleSearch(this.value)" autocomplete="off" />
       <button class="search-clear" id="clearBtn" onclick="clearSearch()" aria-label="Сбросить поиск">✕</button>
       <button class="search-btn" onclick="handleSearch(document.getElementById('searchInput').value)">Найти</button>
     </div>
@@ -460,19 +153,16 @@
 
 <main class="main">
   <p class="count-label" id="countLabel">Загрузка…</p>
-
   <div class="state-box visible" id="loadingState">
     <div class="loading-spinner"></div>
     <p class="state-sub">Загружаем объявления…</p>
   </div>
-
   <div class="state-box" id="emptyState">
     <div class="state-icon">🌱</div>
     <p class="state-title" id="emptyStateTitle">Ничего не найдено</p>
     <p class="state-sub">Возможно, есть другие культуры.</p>
     <button class="state-reset" onclick="clearSearch()">Сбросить поиск</button>
   </div>
-
   <div id="farmsContainer"></div>
 </main>
 
@@ -481,14 +171,11 @@
 </footer>
 
 <script>
-// ── CONFIG ─────────────────────────────────────────────────
 const SHEET_ID   = '19MDUt1i18ZOG82g7pIN_4SNhMvS8_bTJXTxSD5T0_no';
 const FARMS_GID  = '1654926053';
 const CROPS_GID  = '605337108';
-
 const FARMS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&gid=${FARMS_GID}`;
 const CROPS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&gid=${CROPS_GID}`;
-
 const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 
 function fmtDate(d) {
@@ -520,6 +207,21 @@ function mapIcon(type) {
   return type && type.toLowerCase().includes('яндекс') ? ICONS.yandex : ICONS.googlemaps;
 }
 
+// ── PHOTO URL CONVERSION ─────────────────────────────────────
+// Converts Google Drive share links to direct image display URLs.
+// Also handles Yandex Disk links. Any other URL is passed through as-is.
+function convertPhotoUrl(url) {
+  if (!url) return '';
+  // Google Drive: https://drive.google.com/file/d/FILE_ID/view → https://drive.google.com/uc?id=FILE_ID
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (driveMatch) return `https://drive.google.com/uc?id=${driveMatch[1]}`;
+  // Google Drive sharing link: https://drive.google.com/open?id=FILE_ID
+  const driveOpen = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
+  if (driveOpen) return `https://drive.google.com/uc?id=${driveOpen[1]}`;
+  // Yandex Disk: already direct links usually work, return as-is
+  return url;
+}
+
 function parseSheet(raw) {
   const json = JSON.parse(raw.replace(/^[^{]*/, '').replace(/[^}]*$/, ''));
   const cols = json.table.cols.map(c => c.label);
@@ -532,7 +234,6 @@ function parseSheet(raw) {
   });
 }
 
-// ── BRAND ICONS (SVG, inline) ────────────────────────────────
 const ICONS = {
   telegram: '<svg width="14" height="14" viewBox="0 0 240 240" style="vertical-align:-2px"><circle cx="120" cy="120" r="120" fill="#229ED9"/><path fill="#fff" d="M170.6 76.6c2.9-1.2 6.2 1 5.8 4.2l-15.4 105.5c-.6 4.2-5.4 6.2-8.8 3.7l-30.6-22.6-16.1 15.8c-2 1.9-5.3.7-5.7-1.9l-6.2-39 80.2-69.6c1.7-1.5-.4-4.2-2.4-2.8l-99.5 64.4-31.4-10.2c-4-1.3-4.3-6.9-.5-8.6z"/></svg>',
   viber: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><circle cx="12" cy="12" r="12" fill="#7B519D"/><path fill="#fff" d="M16.5 14.4l-1.8-.9a1 1 0 0 0-1.1.2l-.5.5a8 8 0 0 1-3.3-3.3l.5-.5a1 1 0 0 0 .2-1.1l-.9-1.8a1 1 0 0 0-1.2-.5 3.6 3.6 0 0 0-2.4 3.4c0 4.4 3.6 8 8 8a3.6 3.6 0 0 0 3.4-2.4 1 1 0 0 0-.5-1.2z"/><path fill="none" stroke="#fff" stroke-width=".9" stroke-linecap="round" d="M13.2 6.8a4 4 0 0 1 3 3M14.1 4.6a6.4 6.4 0 0 1 5 5"/></svg>',
@@ -541,31 +242,12 @@ const ICONS = {
   phone: '<svg width="14" height="14" viewBox="0 0 24 24" fill="#3B6D11" style="vertical-align:-2px"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>'
 };
 
-// ── CATEGORY DICTIONARY ──────────────────────────────────────
-// Each category lists crop keywords (matched against the "Культура" text, lowercase).
-// The displayed chip label/emoji for each crop comes from cropEmoji() below.
 const CATEGORIES = [
-  {
-    key: 'berries', label: 'Ягоды', icon: '🍓',
-    crops: ['клубник', 'земляник', 'малин', 'смородин', 'крыжовник', 'ежевик', 'черник', 'голубик', 'клюкв', 'вишн', 'черешн']
-  },
-  {
-    key: 'fruits', label: 'Фрукты', icon: '🍎',
-    crops: ['яблок', 'груш', 'слив']
-  },
-  {
-    key: 'veg', label: 'Овощи', icon: '🥒',
-    crops: ['огурц', 'помидор', 'томат', 'перец', 'кабачк', 'цукини', 'баклажан', 'тыкв', 'капуст', 'кольраб',
-            'свёкл', 'свекл', 'морков', 'картоф', 'топинамбур', 'редиск', 'лук', 'чеснок']
-  },
-  {
-    key: 'greens', label: 'Зелень', icon: '🌿',
-    crops: ['укроп', 'петрушк', 'руккол', 'салат', 'зелен']
-  },
-  {
-    key: 'legumes', label: 'Бобовые', icon: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><path d="M12 2C8 2 5 5 5 10c0 7 4 12 7 12s7-5 7-12c0-5-3-8-7-8z" fill="#3B6D11"/><ellipse cx="9.5" cy="9" rx="1.9" ry="2.3" fill="#7AAB6E"/><ellipse cx="14" cy="13" rx="1.9" ry="2.3" fill="#7AAB6E"/><ellipse cx="10" cy="17" rx="1.7" ry="2.1" fill="#7AAB6E"/></svg>',
-    crops: ['фасол', 'боб', 'горох']
-  }
+  { key: 'berries', label: 'Ягоды', icon: '🍓', crops: ['клубник', 'земляник', 'малин', 'смородин', 'крыжовник', 'ежевик', 'черник', 'голубик', 'клюкв', 'вишн', 'черешн'] },
+  { key: 'fruits',  label: 'Фрукты', icon: '🍎', crops: ['яблок', 'груш', 'слив'] },
+  { key: 'veg',     label: 'Овощи', icon: '🥒', crops: ['огурц', 'помидор', 'томат', 'перец', 'кабачк', 'цукини', 'баклажан', 'тыкв', 'капуст', 'кольраб', 'свёкл', 'свекл', 'морков', 'картоф', 'топинамбур', 'редиск', 'лук', 'чеснок'] },
+  { key: 'greens',  label: 'Зелень', icon: '🌿', crops: ['укроп', 'петрушк', 'руккол', 'салат', 'зелен'] },
+  { key: 'legumes', label: 'Бобовые', icon: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><path d="M12 2C8 2 5 5 5 10c0 7 4 12 7 12s7-5 7-12c0-5-3-8-7-8z" fill="#3B6D11"/><ellipse cx="9.5" cy="9" rx="1.9" ry="2.3" fill="#7AAB6E"/><ellipse cx="14" cy="13" rx="1.9" ry="2.3" fill="#7AAB6E"/><ellipse cx="10" cy="17" rx="1.7" ry="2.1" fill="#7AAB6E"/></svg>', crops: ['фасол', 'боб', 'горох'] }
 ];
 
 function findCategory(cropName) {
@@ -576,34 +258,24 @@ function findCategory(cropName) {
   return null;
 }
 
-
-let allFarms  = [];
-let allCrops  = [];
-let query     = '';
-let expandedFarms = new Set();
-let activeCategory = '';  // '' = no category chosen
-let activeCrop = '';      // '' = no specific crop chip chosen within category
+let allFarms = [], allCrops = [], query = '', expandedFarms = new Set(), activeCategory = '', activeCrop = '';
 
 async function fetchSheet(url) {
-  const res  = await fetch(url);
+  const res = await fetch(url);
   const text = await res.text();
   return parseSheet(text);
 }
 
 async function loadData() {
   try {
-    const [farms, crops] = await Promise.all([
-      fetchSheet(FARMS_URL),
-      fetchSheet(CROPS_URL)
-    ]);
+    const [farms, crops] = await Promise.all([fetchSheet(FARMS_URL), fetchSheet(CROPS_URL)]);
     allFarms = farms.filter(f => String(f['Одобрено']).toUpperCase() === 'TRUE');
     allCrops = crops.filter(c => String(c['Одобрено']).toUpperCase() === 'TRUE');
     document.getElementById('loadingState').classList.remove('visible');
     renderFilters();
     render();
   } catch(e) {
-    document.getElementById('loadingState').innerHTML =
-      '<div class="state-icon">⚠️</div><p class="state-title">Не удалось загрузить данные</p><p class="state-sub">Проверьте подключение к интернету и попробуйте снова.</p>';
+    document.getElementById('loadingState').innerHTML = '<div class="state-icon">⚠️</div><p class="state-title">Не удалось загрузить данные</p><p class="state-sub">Проверьте подключение к интернету и попробуйте снова.</p>';
     console.error(e);
   }
 }
@@ -619,73 +291,32 @@ function toggleDetail(farmId) {
   if (el) el.classList.toggle('open');
 }
 
-// ── ACTIVE (NON-EXPIRED) CROPS HELPER ───────────────────────
 function getActiveCrops() {
-  return allCrops.filter(c => {
-    const s = seasonStatus(c['Сезон с'], c['Сезон по']);
-    return !s || s.type !== 'expired';
-  });
+  return allCrops.filter(c => { const s = seasonStatus(c['Сезон с'], c['Сезон по']); return !s || s.type !== 'expired'; });
 }
 
-// ── BUILD CATEGORY TABS + CROP CHIPS DYNAMICALLY ────────────
 function renderFilters() {
-  const catTabsEl   = document.getElementById('catTabs');
-  const chipsEl     = document.getElementById('chipsWrap');
+  const catTabsEl = document.getElementById('catTabs');
+  const chipsEl = document.getElementById('chipsWrap');
   const filtersEmptyEl = document.getElementById('filtersEmpty');
   const activeCrops = getActiveCrops();
-
-  if (activeCrops.length === 0) {
-    catTabsEl.innerHTML = '';
-    chipsEl.innerHTML = '';
-    filtersEmptyEl.classList.add('visible');
-    return;
-  }
+  if (activeCrops.length === 0) { catTabsEl.innerHTML = ''; chipsEl.innerHTML = ''; filtersEmptyEl.classList.add('visible'); return; }
   filtersEmptyEl.classList.remove('visible');
-
-  // Which categories actually have at least one active crop right now?
-  const categoriesPresent = CATEGORIES.filter(cat =>
-    activeCrops.some(c => findCategory(c['Культура']) === cat)
-  );
-
-  catTabsEl.innerHTML = categoriesPresent.map(cat => `
-    <button class="cat-tab ${activeCategory === cat.key ? 'active' : ''}" onclick="pickCategory('${cat.key}')">
-      ${cat.icon} ${cat.label}
-    </button>`).join('');
-
-  // If the previously active category no longer exists in the list, reset it
-  if (activeCategory && !categoriesPresent.some(c => c.key === activeCategory)) {
-    activeCategory = '';
-    activeCrop = '';
-  }
-
-  if (!activeCategory) {
-    chipsEl.innerHTML = '';
-    return;
-  }
-
-  // Build the set of distinct crop names within the active category
+  const categoriesPresent = CATEGORIES.filter(cat => activeCrops.some(c => findCategory(c['Культура']) === cat));
+  catTabsEl.innerHTML = categoriesPresent.map(cat => `<button class="cat-tab ${activeCategory === cat.key ? 'active' : ''}" onclick="pickCategory('${cat.key}')">${cat.icon} ${cat.label}</button>`).join('');
+  if (activeCategory && !categoriesPresent.some(c => c.key === activeCategory)) { activeCategory = ''; activeCrop = ''; }
+  if (!activeCategory) { chipsEl.innerHTML = ''; return; }
   const cat = categoriesPresent.find(c => c.key === activeCategory);
-  const cropNames = [...new Set(
-    activeCrops
-      .filter(c => findCategory(c['Культура']) === cat)
-      .map(c => (c['Культура'] || '').trim())
-      .filter(Boolean)
-  )].sort((a, b) => a.localeCompare(b, 'ru'));
-
-  chipsEl.innerHTML = cropNames.map(name => `
-    <button class="chip ${activeCrop === name.toLowerCase() ? 'active' : ''}" onclick="pickCrop('${name.toLowerCase().replace(/'/g, "\\'")}')">
-      ${cropEmoji(name)} ${name}
-    </button>`).join('');
+  const cropNames = [...new Set(activeCrops.filter(c => findCategory(c['Культура']) === cat).map(c => (c['Культура'] || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ru'));
+  chipsEl.innerHTML = cropNames.map(name => `<button class="chip ${activeCrop === name.toLowerCase() ? 'active' : ''}" onclick="pickCrop('${name.toLowerCase().replace(/'/g, "\\'")}')">${cropEmoji(name)} ${name}</button>`).join('');
 }
 
 function pickCategory(key) {
   activeCategory = (activeCategory === key) ? '' : key;
-  activeCrop = '';
-  query = '';
+  activeCrop = ''; query = '';
   document.getElementById('searchInput').value = '';
   document.getElementById('clearBtn').classList.remove('visible');
-  renderFilters();
-  render();
+  renderFilters(); render();
 }
 
 function pickCrop(name) {
@@ -693,8 +324,7 @@ function pickCrop(name) {
   query = activeCrop;
   document.getElementById('searchInput').value = '';
   document.getElementById('clearBtn').classList.remove('visible');
-  renderFilters();
-  render();
+  renderFilters(); render();
 }
 
 function render() {
@@ -702,24 +332,16 @@ function render() {
   const emptyState = document.getElementById('emptyState');
   const countLabel = document.getElementById('countLabel');
   const q = query.toLowerCase().trim();
-
   container.innerHTML = '';
   let visibleFarms = 0;
 
   allFarms.forEach(farm => {
     const farmID = String(farm['FermaID'] || '');
     let crops = allCrops.filter(c => String(c['FermaID'] || '').trim() === farmID.trim());
-
-    crops = crops.filter(c => {
-      const s = seasonStatus(c['Сезон с'], c['Сезон по']);
-      return !s || s.type !== 'expired';
-    });
-
+    crops = crops.filter(c => { const s = seasonStatus(c['Сезон с'], c['Сезон по']); return !s || s.type !== 'expired'; });
     if (crops.length === 0) return;
 
-    let visibleCrops = crops;
-    let hiddenCrops  = [];
-
+    let visibleCrops = crops, hiddenCrops = [];
     if (q) {
       const farmMatch = (farm['Название / Имя'] || '').toLowerCase().includes(q);
       if (!farmMatch) {
@@ -728,7 +350,6 @@ function render() {
       }
       if (visibleCrops.length === 0) return;
     }
-
     visibleFarms++;
 
     const isExpanded = expandedFarms.has(farmID);
@@ -738,37 +359,25 @@ function render() {
       const badge = seasonBadge(c['Сезон с'], c['Сезон по']);
       let dniVal = (c['Дни'] || '').trim();
       let vremyaVal = (c['Время'] || '').trim();
-      // Strip leading labels like "Весь день", "День", "Утро" before a time range in parentheses, keep just the range
       const timeRangeMatch = vremyaVal.match(/\(([^)]+)\)/);
-      if (timeRangeMatch) {
-        vremyaVal = timeRangeMatch[1]; // just the "8:00–20:00" part
-      }
-      // If Дни and Время ended up identical (e.g. both "По договорённости"), show only once
+      if (timeRangeMatch) vremyaVal = timeRangeMatch[1];
       const schedParts = (dniVal && dniVal === vremyaVal) ? [dniVal] : [dniVal, vremyaVal].filter(Boolean);
       const sched = schedParts.join(' · ');
       const priceDetail = c['Цена (подробнее)'] || '';
       const priceStr = priceDetail ? priceDetail : (c['Условия оплаты'] || '');
-      return `
-        <div class="crop-row">
-          <div class="crop-top">
-            <span class="crop-name">${cropEmoji(c['Культура'])} ${c['Культура'] || ''}</span>
-            <span class="crop-price">${priceStr}</span>
-          </div>
-          ${sched ? `<div class="crop-meta">🕐 ${sched}</div>` : ''}
-          ${badge}
-        </div>`;
+      return `<div class="crop-row"><div class="crop-top"><span class="crop-name">${cropEmoji(c['Культура'])} ${c['Культура'] || ''}</span><span class="crop-price">${priceStr}</span></div>${sched ? `<div class="crop-meta">🕐 ${sched}</div>` : ''}${badge}</div>`;
     }).join('');
 
     let hiddenNote = '';
     if (q && hiddenCrops.length > 0) {
-      hiddenNote = `<div class="hidden-note ${isExpanded ? 'expanded' : ''}" onclick="toggleHidden('${farmID}')">
-        ${isExpanded ? 'Скрыть' : 'Ещё ' + hiddenCrops.length + ' ' + cropWord(hiddenCrops.length) + ' от этого хозяйства'}
-        <span class="chev">▾</span>
-      </div>`;
+      hiddenNote = `<div class="hidden-note ${isExpanded ? 'expanded' : ''}" onclick="toggleHidden('${farmID}')">${isExpanded ? 'Скрыть' : 'Ещё ' + hiddenCrops.length + ' ' + cropWord(hiddenCrops.length) + ' от этого хозяйства'}<span class="chev">▾</span></div>`;
     }
 
-    const photo = farm['Фото (URL)']
-      ? `<img src="${farm['Фото (URL)']}" alt="${farm['Название / Имя']}" loading="lazy" />`
+    // ── PHOTO URL — auto-convert Google Drive links ──────────
+    const rawPhotoUrl = farm['Фото (URL)'] || '';
+    const photoUrl = convertPhotoUrl(rawPhotoUrl);
+    const photo = photoUrl
+      ? `<img src="${photoUrl}" alt="${farm['Название / Имя']}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='${photoEmoji(farm['Тип хозяйства'])}'"/>`
       : photoEmoji(farm['Тип хозяйства']);
 
     const mapLabel = farm['Тип карты'] || 'Карта';
@@ -783,59 +392,27 @@ function render() {
     const nameHTML = hasDesc
       ? `<span class="farm-name clickable" onclick="toggleDetail('${farmID}')">${farm['Название / Имя'] || ''}</span>`
       : `<span class="farm-name">${farm['Название / Имя'] || ''}</span>`;
+    const detailHTML = hasDesc ? `<div class="farm-detail" id="detail-${farmID}">${desc}</div>` : '';
 
-    const detailHTML = hasDesc
-      ? `<div class="farm-detail" id="detail-${farmID}">${desc}</div>`
-      : '';
-
-    // Contact buttons — show ALL methods the farmer provided
     let contactBtns = '';
     if (phone)  contactBtns += `<a href="tel:${phone.replace(/\s/g,'')}" class="btn-contact">${ICONS.phone} ${phone}</a>`;
     if (tg)     contactBtns += `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">${ICONS.telegram} ${tg}</a>`;
     if (viber)  contactBtns += `<a href="viber://chat?number=${viber.replace(/\s/g,'')}" class="btn-contact">${ICONS.viber} ${viber}</a>`;
 
-    container.innerHTML += `
-      <article class="farm-card">
-        <div class="farm-header">
-          <div class="farm-photo">${photo}</div>
-          <div class="farm-info">
-            <div class="farm-name-row">
-              ${nameHTML}
-              <span class="farm-badge">${farm['Тип хозяйства'] || ''}</span>
-            </div>
-            ${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}
-          </div>
-        </div>
-        ${detailHTML}
-        <div class="crop-list">${cropRowsHTML}</div>
-        ${hiddenNote}
-        <div class="farm-footer">
-          ${mapLink && mapLink !== '#'
-            ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>`
-            : ''}
-          ${contactBtns}
-        </div>
-      </article>`;
+    container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}<span class="farm-badge">${farm['Тип хозяйства'] || ''}</span></div>${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>` : ''}${contactBtns}</div></article>`;
   });
 
-  if (q) {
-    countLabel.textContent = visibleFarms === 0
-      ? ''
-      : `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
-  } else {
-    countLabel.textContent = `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
-  }
+  countLabel.textContent = q
+    ? (visibleFarms === 0 ? '' : `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`)
+    : `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
 
   document.getElementById('emptyStateTitle').textContent = activeCrop
     ? `${capitalize(activeCrop)} сейчас не доступна`
     : 'Ничего не найдено';
-
   emptyState.classList.toggle('visible', visibleFarms === 0);
 }
 
-function capitalize(s) {
-  return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-}
+function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
 function cropEmoji(name) {
   if (!name) return '🌿';
@@ -880,42 +457,21 @@ function cropEmoji(name) {
   return '🌱';
 }
 
-function photoEmoji(type) {
-  return type && type.toLowerCase().includes('ферм') ? '🚜' : '🏡';
-}
-
-function cropWord(n) {
-  if (n % 10 === 1 && n % 100 !== 11) return 'культура';
-  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'культуры';
-  return 'культур';
-}
-
-function farmWord(n) {
-  if (n % 10 === 1 && n % 100 !== 11) return 'хозяйство';
-  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'хозяйства';
-  return 'хозяйств';
-}
+function photoEmoji(type) { return type && type.toLowerCase().includes('ферм') ? '🚜' : '🏡'; }
+function cropWord(n) { if (n % 10 === 1 && n % 100 !== 11) return 'культура'; if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'культуры'; return 'культур'; }
+function farmWord(n) { if (n % 10 === 1 && n % 100 !== 11) return 'хозяйство'; if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'хозяйства'; return 'хозяйств'; }
 
 function handleSearch(val) {
-  query = val;
-  activeCategory = '';
-  activeCrop = '';
-  expandedFarms.clear();
-  const clearBtn = document.getElementById('clearBtn');
-  clearBtn.classList.toggle('visible', val.length > 0);
-  renderFilters();
-  render();
+  query = val; activeCategory = ''; activeCrop = ''; expandedFarms.clear();
+  document.getElementById('clearBtn').classList.toggle('visible', val.length > 0);
+  renderFilters(); render();
 }
 
 function clearSearch() {
-  query = '';
-  activeCategory = '';
-  activeCrop = '';
-  expandedFarms.clear();
+  query = ''; activeCategory = ''; activeCrop = ''; expandedFarms.clear();
   document.getElementById('searchInput').value = '';
   document.getElementById('clearBtn').classList.remove('visible');
-  renderFilters();
-  render();
+  renderFilters(); render();
 }
 
 loadData();
