@@ -51,13 +51,7 @@
     .step-text { font-size: .87rem; font-weight: 300; color: rgba(30,20,8,.75); }
     .step-text strong { font-weight: 500; color: var(--earth); }
 
-    /* ── ACTION SELECTOR ─────────────────────────────────── */
-    .action-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
+    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .action-card {
       background: var(--cream);
       border: 1.5px solid var(--border);
@@ -73,17 +67,10 @@
       transition: all .18s;
     }
     .action-card:hover { border-color: var(--leaf); }
-    .action-card.active {
-      background: var(--mist);
-      border-color: var(--leaf);
-    }
+    .action-card.active { background: var(--mist); border-color: var(--leaf); }
     .action-icon { font-size: 1.6rem; }
-    .action-label {
-      font-size: .78rem;
-      font-weight: 500;
-      color: var(--earth);
-      line-height: 1.35;
-    }
+    .action-label { font-size: .78rem; font-weight: 500; color: var(--earth); line-height: 1.35; }
+
     .action-hint {
       background: var(--mist);
       border-radius: 10px;
@@ -97,11 +84,9 @@
     }
     .action-hint.warn { background: #FAEEDA; color: #633806; }
 
-    /* ── BUYERS INFO — hidden once action selected ───────── */
     .buyers-info { transition: all .2s; }
     .buyers-info.hidden { display: none; }
 
-    /* ── FORM — hidden until action selected ─────────────── */
     .form-wrap { display: none; }
     .form-wrap.visible { display: block; }
 
@@ -112,10 +97,6 @@
       min-height: 1400px;
       display: block;
       margin-top: 8px;
-    }
-
-    @media (max-width: 480px) {
-      .action-grid { grid-template-columns: 1fr 1fr; }
     }
 
     .site-footer { background: white; border-top: 1px solid var(--border); color: rgba(30,20,8,.4); text-align: center; padding: 22px 20px; font-size: .78rem; }
@@ -183,7 +164,7 @@
       frameborder="0"
       marginheight="0"
       marginwidth="0"
-      title="Форма добавления объявления"
+      title="Форма"
     >Загрузка…</iframe>
   </div>
 
@@ -194,62 +175,57 @@
 </footer>
 
 <script>
-const FORM_BASE_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScsgf6wGa17-PMtrZvlzoWR5ig2KOLxqqE9ssCRtInTGYPDXA/viewform?embedded=true';
-const FORM_FIELD_ENTRY_ID = 'entry.XXXXXXXXX';
+// ── FORM URLS ───────────────────────────────────────────────
+const FORMS = {
+  main:       'https://docs.google.com/forms/d/e/1FAIpQLScsgf6wGa17-PMtrZvlzoWR5ig2KOLxqqE9ssCRtInTGYPDXA/viewform?embedded=true',
+  closeCrop:  'https://docs.google.com/forms/d/e/1FAIpQLSc1_KviThUHgLf2sDz0KHO8yB-F1ixvR2e1c6K1pD4M1-Ciog/viewform?embedded=true',
+  closeAll:   'https://docs.google.com/forms/d/e/1FAIpQLSf9FlkTj2oWZ4eWSWV_aqBhpa0vg0AyryBQmELsLzbwqpy29g/viewform?embedded=true'
+};
 
 const ACTION_CONFIG = {
   'new': {
     hint: 'Заполните форму ниже — это займёт около <strong>3 минут</strong>. Мы проверим и опубликуем в течение <strong>24 часов</strong>.',
     icon: '🌱',
     warn: false,
-    value: 'Новое объявление'
+    form: FORMS.main
   },
   'update': {
-    hint: 'Заполните форму ниже, указав <strong>то же название хозяйства</strong> и новые данные (цену, телефон, фото и т.д.). Мы обновим объявление в течение <strong>24 часов</strong>.',
+    hint: 'Заполните форму ниже, указав <strong>то же название хозяйства</strong> и новые данные. Мы обновим объявление в течение <strong>24 часов</strong>.',
     icon: '✏️',
     warn: false,
-    value: 'Изменить данные'
+    form: FORMS.main
   },
   'close-crop': {
-    hint: 'Укажите <strong>то же название хозяйства</strong> и выберите культуру, которую нужно закрыть. Остальные ваши культуры останутся видны покупателям.',
+    hint: 'Укажите название хозяйства, выберите культуру и дату закрытия. Мы снимем её с публикации в течение <strong>24 часов</strong>.',
     icon: '🍓',
     warn: true,
-    value: 'Закрыть одну культуру'
+    form: FORMS.closeCrop
   },
   'close-all': {
-    hint: 'Укажите <strong>то же название хозяйства</strong>. Мы скроем всё объявление с сайта в течение <strong>24 часов</strong>.',
+    hint: 'Укажите название хозяйства и дату закрытия. Мы снимем всё объявление с публикации в течение <strong>24 часов</strong>.',
     icon: '🔒',
     warn: true,
-    value: 'Закрыть всё объявление'
+    form: FORMS.closeAll
   }
 };
 
 function selectAction(key) {
-  // Update active card
   document.querySelectorAll('.action-card').forEach(c => c.classList.remove('active'));
   document.querySelector(`.action-card[onclick="selectAction('${key}')"]`).classList.add('active');
 
-  // Show and update hint
   const cfg = ACTION_CONFIG[key];
+
   const hintBox = document.getElementById('actionHint');
   hintBox.style.display = 'flex';
   hintBox.innerHTML = `<span style="flex-shrink:0;margin-top:1px;">${cfg.icon}</span><span>${cfg.hint}</span>`;
   hintBox.classList.toggle('warn', cfg.warn);
 
-  // Hide buyers info card
   document.getElementById('buyersInfo').classList.add('hidden');
 
-  // Show form
   const formWrap = document.getElementById('formWrap');
   formWrap.classList.add('visible');
 
-  // Load form with pre-fill if entry ID is configured
-  const iframe = document.getElementById('formEmbed');
-  if (FORM_FIELD_ENTRY_ID !== 'entry.XXXXXXXXX') {
-    iframe.src = `${FORM_BASE_URL}&${FORM_FIELD_ENTRY_ID}=${encodeURIComponent(cfg.value)}`;
-  } else {
-    iframe.src = FORM_BASE_URL;
-  }
+  document.getElementById('formEmbed').src = cfg.form;
 }
 </script>
 
