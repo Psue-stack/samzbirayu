@@ -15,6 +15,8 @@
       --sage:   #639922;
       --cream:  #faf9f6;
       --mist:   #eaf3de;
+      --amber:  #faeeda;
+      --amber-dark: #633806;
       --border: rgba(30,20,8,.09);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,13 +29,13 @@
       -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
 
     .hero { background: white; border-bottom: 1px solid var(--border); padding: 22px 20px 28px; }
     .nav { max-width: 680px; margin: 0 auto 24px; display: flex; justify-content: space-between; align-items: center; }
     .logo { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--leaf); font-weight: 500; }
     .back-btn { color: rgba(30,20,8,.5); font-size: .82rem; transition: color .18s; }
     .back-btn:hover { color: var(--leaf); }
-
     .hero-content { max-width: 620px; margin: 0 auto; text-align: center; }
     .hero-tag { font-size: .7rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--sage); margin-bottom: 10px; }
     h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 5vw, 2.2rem); color: var(--earth); margin-bottom: 10px; }
@@ -51,7 +53,13 @@
     .step-text { font-size: .87rem; font-weight: 300; color: rgba(30,20,8,.75); }
     .step-text strong { font-weight: 500; color: var(--earth); }
 
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    /* ── ACTION CARDS ─────────────────────────────────────── */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
     .action-card {
       background: var(--cream);
       border: 1.5px solid var(--border);
@@ -63,13 +71,49 @@
       text-align: center;
       gap: 8px;
       cursor: pointer;
-      font-family: 'Geologica', sans-serif;
       transition: all .18s;
     }
     .action-card:hover { border-color: var(--leaf); }
     .action-card.active { background: var(--mist); border-color: var(--leaf); }
     .action-icon { font-size: 1.6rem; }
     .action-label { font-size: .78rem; font-weight: 500; color: var(--earth); line-height: 1.35; }
+
+    /* ── SUB-CARDS (update options) ──────────────────────── */
+    .sub-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .sub-card {
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .sub-card:hover { border-color: var(--leaf); }
+    .sub-card.active { background: var(--mist); border-color: var(--leaf); }
+    .sub-icon { font-size: 1.3rem; }
+    .sub-label { font-size: .72rem; font-weight: 500; color: var(--earth); line-height: 1.3; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .78rem;
+      color: rgba(30,20,8,.5);
+      cursor: pointer;
+      margin-bottom: 14px;
+      transition: color .18s;
+    }
+    .back-link:hover { color: var(--leaf); }
 
     .action-hint {
       background: var(--mist);
@@ -80,11 +124,9 @@
       display: flex;
       gap: 9px;
       align-items: flex-start;
-      transition: background .2s;
     }
-    .action-hint.warn { background: #FAEEDA; color: #633806; }
+    .action-hint.warn { background: var(--amber); color: var(--amber-dark); }
 
-    .buyers-info { transition: all .2s; }
     .buyers-info.hidden { display: none; }
 
     .form-wrap { display: none; }
@@ -94,7 +136,7 @@
       width: 100%;
       border: none;
       border-radius: 16px;
-      min-height: 1400px;
+      min-height: 800px;
       display: block;
       margin-top: 8px;
     }
@@ -121,24 +163,46 @@
 
   <div class="info-card">
     <h2>Что вы хотите сделать?</h2>
-    <div class="action-grid">
+
+    <!-- Main 4 cards -->
+    <div class="action-grid" id="mainGrid">
       <button class="action-card" onclick="selectAction('new')">
         <span class="action-icon">🌱</span>
         <span class="action-label">Подать новое объявление</span>
       </button>
-      <button class="action-card" onclick="selectAction('update')">
+      <button class="action-card" onclick="showUpdateOptions()">
         <span class="action-icon">✏️</span>
-        <span class="action-label">Изменить цену, телефон или фото</span>
+        <span class="action-label">Изменить данные</span>
       </button>
       <button class="action-card" onclick="selectAction('close-crop')">
         <span class="action-icon">🍓</span>
-        <span class="action-label">Закрыть одну культуру (распродано)</span>
+        <span class="action-label">Закрыть одну культуру</span>
       </button>
       <button class="action-card" onclick="selectAction('close-all')">
         <span class="action-icon">🔒</span>
         <span class="action-label">Закрыть всё объявление</span>
       </button>
     </div>
+
+    <!-- Sub-cards for update (hidden by default) -->
+    <div id="updateOptions" style="display:none;">
+      <button class="back-link" onclick="showMainOptions()">← Назад ко всем вариантам</button>
+      <div class="sub-grid">
+        <button class="sub-card" onclick="selectAction('update-contacts')">
+          <span class="sub-icon">📞</span>
+          <span class="sub-label">Изменить контакты</span>
+        </button>
+        <button class="sub-card" onclick="selectAction('update-price')">
+          <span class="sub-icon">💰</span>
+          <span class="sub-label">Изменить цену</span>
+        </button>
+        <button class="sub-card" onclick="selectAction('update-photo')">
+          <span class="sub-icon">📷</span>
+          <span class="sub-label">Изменить фото</span>
+        </button>
+      </div>
+    </div>
+
     <div class="action-hint" id="actionHint" style="display:none;"></div>
   </div>
 
@@ -175,56 +239,94 @@
 </footer>
 
 <script>
-// ── FORM URLS ───────────────────────────────────────────────
 const FORMS = {
-  main:       'https://docs.google.com/forms/d/e/1FAIpQLScsgf6wGa17-PMtrZvlzoWR5ig2KOLxqqE9ssCRtInTGYPDXA/viewform?embedded=true',
-  closeCrop:  'https://docs.google.com/forms/d/e/1FAIpQLSc1_KviThUHgLf2sDz0KHO8yB-F1ixvR2e1c6K1pD4M1-Ciog/viewform?embedded=true',
-  closeAll:   'https://docs.google.com/forms/d/e/1FAIpQLSf9FlkTj2oWZ4eWSWV_aqBhpa0vg0AyryBQmELsLzbwqpy29g/viewform?embedded=true'
+  main:           'https://docs.google.com/forms/d/e/1FAIpQLScsgf6wGa17-PMtrZvlzoWR5ig2KOLxqqE9ssCRtInTGYPDXA/viewform?embedded=true',
+  updateContacts: 'https://docs.google.com/forms/d/e/1FAIpQLSdkvRUbiiYhgmXnv-mC3JedN50ATq-w7CSEP5ZlCUk1goZsIg/viewform?embedded=true',
+  updatePrice:    'https://docs.google.com/forms/d/e/1FAIpQLScspawiceuX-O2BJ3pcDTK5bZtSR6hLSv6te0b2uHaDG0VYrg/viewform?embedded=true',
+  updatePhoto:    'https://docs.google.com/forms/d/e/1FAIpQLScFbu5Mjw_XypFqD9dUu8yOUoblhRHHKC_mWWczAVzUMwB7lw/viewform?embedded=true',
+  closeCrop:      'https://docs.google.com/forms/d/e/1FAIpQLSc1_KviThUHgLf2sDz0KHO8yB-F1ixvR2e1c6K1pD4M1-Ciog/viewform?embedded=true',
+  closeAll:       'https://docs.google.com/forms/d/e/1FAIpQLSf9FlkTj2oWZ4eWSWV_aqBhpa0vg0AyryBQmELsLzbwqpy29g/viewform?embedded=true'
 };
 
 const ACTION_CONFIG = {
   'new': {
     hint: 'Заполните форму ниже — это займёт около <strong>3 минут</strong>. Мы проверим и опубликуем в течение <strong>24 часов</strong>.',
-    icon: '🌱',
-    warn: false,
-    form: FORMS.main
+    icon: '🌱', warn: false, form: FORMS.main
   },
-  'update': {
-    hint: 'Заполните форму ниже, указав <strong>то же название хозяйства</strong> и новые данные. Мы обновим объявление в течение <strong>24 часов</strong>.',
-    icon: '✏️',
-    warn: false,
-    form: FORMS.main
+  'update-contacts': {
+    hint: 'Укажите название хозяйства и новые контактные данные. Заполните только те поля, которые нужно изменить.',
+    icon: '📞', warn: false, form: FORMS.updateContacts
+  },
+  'update-price': {
+    hint: 'Укажите название хозяйства, выберите культуру и новую цену.',
+    icon: '💰', warn: false, form: FORMS.updatePrice
+  },
+  'update-photo': {
+    hint: 'Укажите название хозяйства и новую ссылку на фото.',
+    icon: '📷', warn: false, form: FORMS.updatePhoto
   },
   'close-crop': {
     hint: 'Укажите название хозяйства, выберите культуру и дату закрытия. Мы снимем её с публикации в течение <strong>24 часов</strong>.',
-    icon: '🍓',
-    warn: true,
-    form: FORMS.closeCrop
+    icon: '🍓', warn: true, form: FORMS.closeCrop
   },
   'close-all': {
     hint: 'Укажите название хозяйства и дату закрытия. Мы снимем всё объявление с публикации в течение <strong>24 часов</strong>.',
-    icon: '🔒',
-    warn: true,
-    form: FORMS.closeAll
+    icon: '🔒', warn: true, form: FORMS.closeAll
   }
 };
 
-function selectAction(key) {
-  document.querySelectorAll('.action-card').forEach(c => c.classList.remove('active'));
-  document.querySelector(`.action-card[onclick="selectAction('${key}')"]`).classList.add('active');
+function showUpdateOptions() {
+  // Hide main grid, show sub-cards
+  document.getElementById('mainGrid').style.display = 'none';
+  document.getElementById('updateOptions').style.display = 'block';
+  // Reset hint and form
+  document.getElementById('actionHint').style.display = 'none';
+  document.getElementById('formWrap').classList.remove('visible');
+  document.getElementById('formEmbed').src = '';
+  // Clear sub-card active states
+  document.querySelectorAll('.sub-card').forEach(c => c.classList.remove('active'));
+}
 
+function showMainOptions() {
+  // Show main grid, hide sub-cards
+  document.getElementById('mainGrid').style.display = 'grid';
+  document.getElementById('updateOptions').style.display = 'none';
+  // Reset everything
+  document.getElementById('actionHint').style.display = 'none';
+  document.getElementById('formWrap').classList.remove('visible');
+  document.getElementById('formEmbed').src = '';
+  document.getElementById('buyersInfo').classList.remove('hidden');
+  // Clear active states
+  document.querySelectorAll('.action-card').forEach(c => c.classList.remove('active'));
+}
+
+function selectAction(key) {
   const cfg = ACTION_CONFIG[key];
 
+  // Update active state — main cards or sub-cards
+  if (['update-contacts', 'update-price', 'update-photo'].includes(key)) {
+    document.querySelectorAll('.sub-card').forEach(c => c.classList.remove('active'));
+    const idx = ['update-contacts', 'update-price', 'update-photo'].indexOf(key);
+    document.querySelectorAll('.sub-card')[idx].classList.add('active');
+  } else {
+    document.querySelectorAll('.action-card').forEach(c => c.classList.remove('active'));
+    // Find and highlight the clicked main card
+    const cards = document.querySelectorAll('.action-card');
+    const keyMap = { 'new': 0, 'close-crop': 2, 'close-all': 3 };
+    if (keyMap[key] !== undefined) cards[keyMap[key]].classList.add('active');
+  }
+
+  // Show hint
   const hintBox = document.getElementById('actionHint');
   hintBox.style.display = 'flex';
   hintBox.innerHTML = `<span style="flex-shrink:0;margin-top:1px;">${cfg.icon}</span><span>${cfg.hint}</span>`;
-  hintBox.classList.toggle('warn', cfg.warn);
+  hintBox.className = 'action-hint' + (cfg.warn ? ' warn' : '');
 
+  // Hide buyers info
   document.getElementById('buyersInfo').classList.add('hidden');
 
-  const formWrap = document.getElementById('formWrap');
-  formWrap.classList.add('visible');
-
+  // Show form
+  document.getElementById('formWrap').classList.add('visible');
   document.getElementById('formEmbed').src = cfg.form;
 }
 </script>
