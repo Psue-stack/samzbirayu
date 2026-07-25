@@ -127,6 +127,7 @@
     .btn-contact:hover { background: var(--mist); }
     .state-box { text-align: center; padding: 24px 20px; display: none; }
     .state-box.visible { display: block; }
+    #emptyState.visible { padding-top: 12px; }
     .state-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .state-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; }
     .state-sub { font-size: .95rem; color: rgba(30,20,8,.5); margin-bottom: 20px; }
@@ -184,10 +185,10 @@
     <p class="state-sub">Загружаем объявления…</p>
   </div>
   <div class="state-box" id="emptyState">
-    <div class="state-icon">🌱</div>
+    <div class="state-icon" id="emptyStateIcon">🌱</div>
     <p class="state-title" id="emptyStateTitle">Ничего не найдено</p>
-    <p class="state-sub">Возможно, есть другие культуры.</p>
-    <button class="state-reset" onclick="clearSearch()">Сбросить поиск</button>
+    <p class="state-sub" id="emptyStateSub">Выберите другую область</p>
+    <button class="state-reset" id="emptyStateReset" onclick="clearSearch()">Сбросить поиск</button>
   </div>
   <div id="farmsContainer"></div>
 </main>
@@ -477,23 +478,50 @@ function render() {
     container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}<span class="farm-badge">${farm['Тип хозяйства'] || ''}</span></div>${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>` : ''}${contactBtns}</div></article>`;
   });
 
-  // Count line always shows the selected oblast
-  countLabel.textContent = `${visibleFarms} ${farmWord(visibleFarms)} · ${activeOblast}`;
+  // Count line: show "N хозяйств · Область" only when there are results;
+  // hide entirely when the oblast/search is empty (change #1)
+  if (visibleFarms > 0) {
+    countLabel.textContent = `${visibleFarms} ${farmWord(visibleFarms)} · ${activeOblast}`;
+    countLabel.style.display = '';
+  } else {
+    countLabel.style.display = 'none';
+  }
 
-  // Empty state — region-specific message
+  // Empty state — context-aware messaging (changes #2, #3, #4)
+  const et    = document.getElementById('emptyStateTitle');
+  const esub  = document.getElementById('emptyStateSub');
+  const eicon = document.getElementById('emptyStateIcon');
+  const ereset= document.getElementById('emptyStateReset');
+
   if (visibleFarms === 0) {
-    const et = document.getElementById('emptyStateTitle');
-    if (activeCrop) {
-      et.textContent = `${capitalize(activeCrop)} сейчас не доступна`;
-    } else if (q) {
-      et.textContent = 'Ничего не найдено';
+    const searchActive = !!(q || activeCrop || activeCategory);
+    if (searchActive) {
+      // Situation B — a search/filter found nothing in this oblast
+      et.textContent = activeCrop
+        ? `${capitalize(activeCrop)} сейчас не доступна`
+        : 'Ничего не найдено';
+      esub.textContent = 'Попробуйте другой запрос';
+      eicon.textContent = '🔍';
+      ereset.style.display = '';           // show reset — there IS something to clear
     } else {
-      et.textContent = `В регионе «${activeOblast}» пока нет объявлений`;
+      // Situation A — the whole oblast is empty
+      et.textContent = `В ${oblastPrepositional(activeOblast)} пока нет объявлений`;
+      esub.textContent = 'Выберите другую область';
+      eicon.textContent = '🍒';
+      ereset.style.display = 'none';        // hide reset — nothing to clear (change #4)
     }
     emptyState.classList.add('visible');
   } else {
     emptyState.classList.remove('visible');
   }
+}
+
+// Convert oblast name from nominative to prepositional case for the message
+// "Брестская область" → "Брестской области" (change #2)
+function oblastPrepositional(name) {
+  return name
+    .replace(/ская область$/, 'ской области')
+    .replace(/вская область$/, 'вской области');
 }
 
 function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
