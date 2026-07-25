@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Сам збіраю — Фермы и дачи Минской области</title>
+  <title>Сам збіраю — Фермы и дачи Беларуси</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Geologica:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -36,8 +36,27 @@
     a { color: inherit; text-decoration: none; }
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
     .hero { background: white; border-bottom: 1px solid var(--border); padding: 22px 20px 26px; }
-    .nav { max-width: 760px; margin: 0 auto 28px; display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--leaf); font-weight: 500; }
+    .nav { max-width: 760px; margin: 0 auto 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .oblast-select {
+      height: 38px;
+      font-family: 'Geologica', sans-serif;
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--earth);
+      width: auto;
+      padding: 0 30px 0 16px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="%235c3d1e" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      cursor: pointer;
+      transition: border-color .18s;
+    }
+    .oblast-select:hover { border-color: var(--leaf); }
     .add-btn { background: var(--leaf); color: white; border-radius: 50px; padding: 9px 18px; font-size: .8rem; font-weight: 500; white-space: nowrap; transition: background .2s; }
     .add-btn:hover { background: var(--sage); }
     .hero-center { max-width: 560px; margin: 0 auto; text-align: center; }
@@ -124,12 +143,19 @@
 
 <header class="hero">
   <nav class="nav">
-    <div class="logo">🌿 Сам збіраю</div>
+    <select class="oblast-select" id="oblastSelect" onchange="pickOblast(this.value)">
+      <option>Брестская область</option>
+      <option>Витебская область</option>
+      <option>Гомельская область</option>
+      <option>Гродненская область</option>
+      <option>Минская область</option>
+      <option>Могилёвская область</option>
+    </select>
     <a href="dobavit.html" class="add-btn">+ Подать объявление</a>
   </nav>
   <div class="hero-center">
-    <div class="hero-tag">Минская область · самосбор</div>
-    <h1>Свежее прямо<br/><em>с грядки</em></h1>
+    <div class="hero-tag">Самосбор</div>
+    <h1>🌿 <em>Сам збіраю</em></h1>
     <p class="hero-sub">Фермы и дачи, где можно самому собрать фрукты и овощи. Без посредников.</p>
     <div class="search-wrap">
       <input class="search-input" id="searchInput" type="text" placeholder="Что ищете?" oninput="handleSearch(this.value)" autocomplete="off" />
@@ -167,7 +193,7 @@
 </main>
 
 <footer class="site-footer">
-  <p>🌿 Сам збіраю · Минская область · <a href="dobavit.html">Подать объявление</a></p>
+  <p>🌿 Сам збіраю · Беларусь · <a href="dobavit.html">Подать объявление</a></p>
 </footer>
 
 <script>
@@ -177,6 +203,9 @@ const CROPS_GID  = '605337108';
 const FARMS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&gid=${FARMS_GID}`;
 const CROPS_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1&gid=${CROPS_GID}`;
 const MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+
+const OBLASTS = ['Брестская область','Витебская область','Гомельская область','Гродненская область','Минская область','Могилёвская область'];
+const DEFAULT_OBLAST = 'Минская область';
 
 function fmtDate(d) {
   if (!d) return '';
@@ -207,18 +236,12 @@ function mapIcon(type) {
   return type && type.toLowerCase().includes('яндекс') ? ICONS.yandex : ICONS.googlemaps;
 }
 
-// ── PHOTO URL CONVERSION ─────────────────────────────────────
-// Converts Google Drive share links to direct image display URLs.
-// Also handles Yandex Disk links. Any other URL is passed through as-is.
 function convertPhotoUrl(url) {
   if (!url) return '';
-  // Google Drive: https://drive.google.com/file/d/FILE_ID/view → https://drive.google.com/uc?id=FILE_ID
   const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (driveMatch) return `https://drive.google.com/uc?id=${driveMatch[1]}`;
-  // Google Drive sharing link: https://drive.google.com/open?id=FILE_ID
   const driveOpen = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/);
   if (driveOpen) return `https://drive.google.com/uc?id=${driveOpen[1]}`;
-  // Yandex Disk: already direct links usually work, return as-is
   return url;
 }
 
@@ -258,12 +281,45 @@ function findCategory(cropName) {
   return null;
 }
 
-let allFarms = [], allCrops = [], query = '', expandedFarms = new Set(), activeCategory = '', activeCrop = '';
+let allFarms = [], allCrops = [], query = '', expandedFarms = new Set(), activeCategory = '', activeCrop = '', activeOblast = DEFAULT_OBLAST;
 
 async function fetchSheet(url) {
   const res = await fetch(url);
   const text = await res.text();
   return parseSheet(text);
+}
+
+// Normalize oblast value: blank/missing → treat as Минская область
+function farmOblast(farm) {
+  const val = (farm['Область'] || '').trim();
+  return val || DEFAULT_OBLAST;
+}
+
+// Farms in the currently-selected oblast
+function farmsInOblast(oblast) {
+  return allFarms.filter(f => farmOblast(f) === oblast);
+}
+
+// Count active (non-expired) farms in an oblast — a farm counts if it has at least one active crop
+function activeFarmCountInOblast(oblast) {
+  return farmsInOblast(oblast).filter(farm => {
+    const farmID = String(farm['FermaID'] || '').trim();
+    const crops = allCrops.filter(c => String(c['FermaID'] || '').trim() === farmID);
+    return crops.some(c => { const s = seasonStatus(c['Сезон с'], c['Сезон по']); return !s || s.type !== 'expired'; });
+  }).length;
+}
+
+// Choose default oblast: the one with most active farms; ties or all-empty → Минская область
+function chooseDefaultOblast() {
+  let best = DEFAULT_OBLAST, bestCount = -1;
+  // Check Минская first so it wins ties naturally
+  const ordered = [DEFAULT_OBLAST, ...OBLASTS.filter(o => o !== DEFAULT_OBLAST)];
+  for (const o of ordered) {
+    const c = activeFarmCountInOblast(o);
+    if (c > bestCount) { bestCount = c; best = o; }
+  }
+  // If everything is zero, best stays as Минская область (first checked)
+  return bestCount <= 0 ? DEFAULT_OBLAST : best;
 }
 
 async function loadData() {
@@ -272,12 +328,25 @@ async function loadData() {
     allFarms = farms.filter(f => String(f['Одобрено']).toUpperCase() === 'TRUE');
     allCrops = crops.filter(c => String(c['Одобрено']).toUpperCase() === 'TRUE');
     document.getElementById('loadingState').classList.remove('visible');
+    // Pick smart default oblast and sync the dropdown
+    activeOblast = chooseDefaultOblast();
+    document.getElementById('oblastSelect').value = activeOblast;
     renderFilters();
     render();
   } catch(e) {
     document.getElementById('loadingState').innerHTML = '<div class="state-icon">⚠️</div><p class="state-title">Не удалось загрузить данные</p><p class="state-sub">Проверьте подключение к интернету и попробуйте снова.</p>';
     console.error(e);
   }
+}
+
+function pickOblast(oblast) {
+  activeOblast = oblast;
+  // Reset all sub-filters when switching region
+  query = ''; activeCategory = ''; activeCrop = ''; expandedFarms.clear();
+  document.getElementById('searchInput').value = '';
+  document.getElementById('clearBtn').classList.remove('visible');
+  renderFilters();
+  render();
 }
 
 function toggleHidden(farmId) {
@@ -291,8 +360,14 @@ function toggleDetail(farmId) {
   if (el) el.classList.toggle('open');
 }
 
+// Active crops belonging to farms in the selected oblast
 function getActiveCrops() {
-  return allCrops.filter(c => { const s = seasonStatus(c['Сезон с'], c['Сезон по']); return !s || s.type !== 'expired'; });
+  const oblastFarmIds = new Set(farmsInOblast(activeOblast).map(f => String(f['FermaID'] || '').trim()));
+  return allCrops.filter(c => {
+    if (!oblastFarmIds.has(String(c['FermaID'] || '').trim())) return false;
+    const s = seasonStatus(c['Сезон с'], c['Сезон по']);
+    return !s || s.type !== 'expired';
+  });
 }
 
 function renderFilters() {
@@ -300,7 +375,7 @@ function renderFilters() {
   const chipsEl = document.getElementById('chipsWrap');
   const filtersEmptyEl = document.getElementById('filtersEmpty');
   const activeCrops = getActiveCrops();
-  if (activeCrops.length === 0) { catTabsEl.innerHTML = ''; chipsEl.innerHTML = ''; filtersEmptyEl.classList.add('visible'); return; }
+  if (activeCrops.length === 0) { catTabsEl.innerHTML = ''; chipsEl.innerHTML = ''; filtersEmptyEl.classList.remove('visible'); return; }
   filtersEmptyEl.classList.remove('visible');
   const categoriesPresent = CATEGORIES.filter(cat => activeCrops.some(c => findCategory(c['Культура']) === cat));
   catTabsEl.innerHTML = categoriesPresent.map(cat => `<button class="cat-tab ${activeCategory === cat.key ? 'active' : ''}" onclick="pickCategory('${cat.key}')">${cat.icon} ${cat.label}</button>`).join('');
@@ -335,7 +410,8 @@ function render() {
   container.innerHTML = '';
   let visibleFarms = 0;
 
-  allFarms.forEach(farm => {
+  // Only farms in the selected oblast
+  farmsInOblast(activeOblast).forEach(farm => {
     const farmID = String(farm['FermaID'] || '');
     let crops = allCrops.filter(c => String(c['FermaID'] || '').trim() === farmID.trim());
     crops = crops.filter(c => { const s = seasonStatus(c['Сезон с'], c['Сезон по']); return !s || s.type !== 'expired'; });
@@ -373,7 +449,6 @@ function render() {
       hiddenNote = `<div class="hidden-note ${isExpanded ? 'expanded' : ''}" onclick="toggleHidden('${farmID}')">${isExpanded ? 'Скрыть' : 'Ещё ' + hiddenCrops.length + ' ' + cropWord(hiddenCrops.length) + ' от этого хозяйства'}<span class="chev">▾</span></div>`;
     }
 
-    // ── PHOTO URL — auto-convert Google Drive links ──────────
     const rawPhotoUrl = farm['Фото (URL)'] || '';
     const photoUrl = convertPhotoUrl(rawPhotoUrl);
     const photo = photoUrl
@@ -402,14 +477,23 @@ function render() {
     container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}<span class="farm-badge">${farm['Тип хозяйства'] || ''}</span></div>${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>` : ''}${contactBtns}</div></article>`;
   });
 
-  countLabel.textContent = q
-    ? (visibleFarms === 0 ? '' : `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`)
-    : `${visibleFarms} ${farmWord(visibleFarms)} · Минская область`;
+  // Count line always shows the selected oblast
+  countLabel.textContent = `${visibleFarms} ${farmWord(visibleFarms)} · ${activeOblast}`;
 
-  document.getElementById('emptyStateTitle').textContent = activeCrop
-    ? `${capitalize(activeCrop)} сейчас не доступна`
-    : 'Ничего не найдено';
-  emptyState.classList.toggle('visible', visibleFarms === 0);
+  // Empty state — region-specific message
+  if (visibleFarms === 0) {
+    const et = document.getElementById('emptyStateTitle');
+    if (activeCrop) {
+      et.textContent = `${capitalize(activeCrop)} сейчас не доступна`;
+    } else if (q) {
+      et.textContent = 'Ничего не найдено';
+    } else {
+      et.textContent = `В регионе «${activeOblast}» пока нет объявлений`;
+    }
+    emptyState.classList.add('visible');
+  } else {
+    emptyState.classList.remove('visible');
+  }
 }
 
 function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
