@@ -131,8 +131,6 @@
     .state-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .state-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; }
     .state-sub { font-size: .95rem; color: rgba(30,20,8,.5); margin-bottom: 20px; }
-    .state-reset { background: none; border: 1px solid var(--border); border-radius: 50px; padding: 9px 22px; font-size: .82rem; color: var(--bark); transition: all .18s; }
-    .state-reset:hover { border-color: var(--leaf); color: var(--leaf); }
     .loading-spinner { width: 36px; height: 36px; border: 3px solid var(--mist); border-top-color: var(--leaf); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .site-footer { background: white; border-top: 1px solid var(--border); color: rgba(30,20,8,.45); text-align: center; padding: 24px 20px; font-size: .78rem; font-weight: 300; }
@@ -188,7 +186,6 @@
     <div class="state-icon" id="emptyStateIcon">🌱</div>
     <p class="state-title" id="emptyStateTitle">Ничего не найдено</p>
     <p class="state-sub" id="emptyStateSub">Выберите другую область</p>
-    <button class="state-reset" id="emptyStateReset" onclick="clearSearch()">Сбросить поиск</button>
   </div>
   <div id="farmsContainer"></div>
 </main>
@@ -487,28 +484,25 @@ function render() {
     countLabel.style.display = 'none';
   }
 
-  // Empty state — context-aware messaging (changes #2, #3, #4)
+  // Empty state — context-aware messaging
   const et    = document.getElementById('emptyStateTitle');
   const esub  = document.getElementById('emptyStateSub');
   const eicon = document.getElementById('emptyStateIcon');
-  const ereset= document.getElementById('emptyStateReset');
 
   if (visibleFarms === 0) {
     const searchActive = !!(q || activeCrop || activeCategory);
     if (searchActive) {
-      // Situation B — a search/filter found nothing in this oblast
-      et.textContent = activeCrop
-        ? `${capitalize(activeCrop)} сейчас не доступна`
-        : 'Ничего не найдено';
-      esub.textContent = 'Попробуйте другой запрос';
+      // Situation B — a search/filter found nothing in this oblast.
+      // Category tabs stay visible above, and the ✕ clears the search,
+      // so no separate reset button is needed here.
+      et.textContent = 'Данный продукт в настоящее время отсутствует';
+      esub.textContent = 'Хотите поискать что-то другое?';
       eicon.textContent = '🔍';
-      ereset.style.display = '';           // show reset — there IS something to clear
     } else {
       // Situation A — the whole oblast is empty
       et.textContent = `В ${oblastPrepositional(activeOblast)} пока нет объявлений`;
       esub.textContent = 'Выберите другую область';
       eicon.textContent = '🍒';
-      ereset.style.display = 'none';        // hide reset — nothing to clear (change #4)
     }
     emptyState.classList.add('visible');
   } else {
