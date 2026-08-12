@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Сам збіраю — Фермы и дачи Беларуси</title>
+  <title>Сам збіраю — Фермерские хозяйства Беларуси</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Geologica:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -93,11 +93,11 @@
     .farm-photo { width: 52px; height: 52px; border-radius: var(--radius-sm); background: var(--mist); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; overflow: hidden; }
     .farm-photo img { width: 100%; height: 100%; object-fit: cover; }
     .farm-info { flex: 1; min-width: 0; }
-    .farm-name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+    .farm-name-row { margin-bottom: 2px; }
     .farm-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 500; color: var(--earth); }
     .farm-name.clickable { cursor: pointer; text-decoration: underline; text-decoration-color: rgba(59,109,17,.35); text-underline-offset: 3px; }
     .farm-name.clickable:hover { color: var(--leaf); }
-    .farm-badge { background: var(--mist); color: var(--leaf); font-size: .65rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 3px 9px; border-radius: 50px; }
+    .farm-badge { display: inline-block; background: var(--mist); color: #27500a; font-size: .62rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 2px 9px; border-radius: 50px; margin-bottom: 4px; }
     .farm-meta { font-size: .78rem; color: rgba(30,20,8,.45); display: flex; align-items: center; gap: 4px; }
     .farm-detail { display: none; padding: 14px 18px; background: var(--mist); border-bottom: 1px solid var(--border); font-size: .85rem; font-weight: 300; color: rgba(30,20,8,.75); line-height: 1.6; }
     .farm-detail.open { display: block; }
@@ -155,7 +155,7 @@
   <div class="hero-center">
     <div class="hero-tag">Самосбор</div>
     <h1>🌿 <em>Сам збіраю</em></h1>
-    <p class="hero-sub">Фермы и дачи, где можно самому собрать фрукты и овощи. Без посредников.</p>
+    <p class="hero-sub">Фермерские хозяйства, где можно самому собрать фрукты и овощи. Без посредников.</p>
     <div class="search-wrap">
       <input class="search-input" id="searchInput" type="text" placeholder="Что ищете?" oninput="handleSearch(this.value)" autocomplete="off" />
       <button class="search-clear" id="clearBtn" onclick="clearSearch()" aria-label="Сбросить поиск">✕</button>
@@ -472,7 +472,7 @@ function render() {
     if (tg)     contactBtns += `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">${ICONS.telegram} ${tg}</a>`;
     if (viber)  contactBtns += `<a href="viber://chat?number=${viber.replace(/\s/g,'')}" class="btn-contact">${ICONS.viber} ${viber}</a>`;
 
-    container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}<span class="farm-badge">${farm['Тип хозяйства'] || ''}</span></div>${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>` : ''}${contactBtns}</div></article>`;
+    container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}</div>${farm['Тип хозяйства'] ? `<span class="farm-badge">${farm['Тип хозяйства']}</span>` : ''}${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>` : ''}${contactBtns}</div></article>`;
   });
 
   // Count line: show "N хозяйств · Область" only when there are results;
@@ -563,7 +563,7 @@ function cropEmoji(name) {
   return '🌱';
 }
 
-function photoEmoji(type) { return type && type.toLowerCase().includes('ферм') ? '🚜' : '🏡'; }
+function photoEmoji(type) { return type && type.toUpperCase().includes('КФХ') ? '🚜' : '🌱'; }
 function cropWord(n) { if (n % 10 === 1 && n % 100 !== 11) return 'культура'; if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'культуры'; return 'культур'; }
 function farmWord(n) { if (n % 10 === 1 && n % 100 !== 11) return 'хозяйство'; if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'хозяйства'; return 'хозяйств'; }
 
