@@ -36,7 +36,10 @@
     a { color: inherit; text-decoration: none; }
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
     .hero { background: white; border-bottom: 1px solid var(--border); padding: 22px 20px 26px; }
-    .nav { max-width: 760px; margin: 0 auto 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    /* 58px = original 28px + space previously occupied by the removed
+       «Самосбор» tag (≈18px line + 12px margin), so the gap between the
+       nav row and the title stays visually identical. */
+    .nav { max-width: 760px; margin: 0 auto 58px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     .oblast-select {
       height: 38px;
       font-family: 'Geologica', sans-serif;
@@ -268,16 +271,26 @@ const CATEGORIES = [
   { key: 'berries', label: 'Ягоды', icon: '🍓', crops: ['клубник', 'земляник', 'малин', 'смородин', 'крыжовник', 'ежевик', 'черник', 'голубик', 'клюкв', 'вишн', 'черешн'] },
   { key: 'fruits',  label: 'Фрукты', icon: '🍎', crops: ['яблок', 'груш', 'слив'] },
   { key: 'veg',     label: 'Овощи', icon: '🥒', crops: ['огурц', 'помидор', 'томат', 'перец', 'кабачк', 'цукини', 'баклажан', 'тыкв', 'капуст', 'кольраб', 'свёкл', 'свекл', 'морков', 'картоф', 'топинамбур', 'редиск', 'лук', 'чеснок'] },
-  { key: 'greens',  label: 'Зелень', icon: '🌿', crops: ['укроп', 'петрушк', 'руккол', 'салат', 'зелен'] },
+  { key: 'greens',  label: 'Зелень', icon: '🌿', crops: ['укроп', 'петрушк', 'руккол', 'салат', 'зелёный лук', 'зелень'] },
   { key: 'legumes', label: 'Бобовые', icon: '<svg width="14" height="14" viewBox="0 0 36 36" style="vertical-align:-2px"><path d="M4 18c0-5 6-8 14-8s14 3 14 8-6 8-14 8S4 23 4 18z" fill="#5FA832"/><path d="M4 18c0 5 6 8 14 8s14-3 14-8c0 2-6 4-14 4S4 20 4 18z" fill="#3B6D11"/><circle cx="10.5" cy="16.5" r="2.9" fill="#C5E39B"/><circle cx="18" cy="16.5" r="2.9" fill="#C5E39B"/><circle cx="25.5" cy="16.5" r="2.9" fill="#C5E39B"/></svg>', crops: ['фасол', 'боб', 'горох'] }
 ];
 
+// Returns the category whose keyword matches the crop name most specifically.
+// Using the LONGEST matching keyword (rather than the first category in the
+// list) prevents collisions like «Зелёный лук», where the short Овощи keyword
+// «лук» would otherwise beat the Зелень keyword «зелёный лук».
 function findCategory(cropName) {
   const n = (cropName || '').toLowerCase();
+  let best = null, bestLen = 0;
   for (const cat of CATEGORIES) {
-    if (cat.crops.some(kw => n.includes(kw))) return cat;
+    for (const kw of cat.crops) {
+      if (n.includes(kw) && kw.length > bestLen) {
+        best = cat;
+        bestLen = kw.length;
+      }
+    }
   }
-  return null;
+  return best;
 }
 
 let allFarms = [], allCrops = [], query = '', expandedFarms = new Set(), activeCategory = '', activeCrop = '', activeOblast = DEFAULT_OBLAST;
@@ -417,6 +430,20 @@ function render() {
     if (crops.length === 0) return;
 
     let visibleCrops = crops, hiddenCrops = [];
+
+    // ── CATEGORY FILTER ──────────────────────────────────────
+    // When a category tab is active (Ягоды, Овощи, …) and no text
+    // search is running, show only crops belonging to that category.
+    if (activeCategory && !q) {
+      const cat = CATEGORIES.find(c => c.key === activeCategory);
+      if (cat) {
+        const inCat = crops.filter(c => findCategory(c['Культура']) === cat);
+        if (inCat.length === 0) return;
+        visibleCrops = inCat;
+        hiddenCrops  = crops.filter(c => findCategory(c['Культура']) !== cat);
+      }
+    }
+
     if (q) {
       const farmMatch = (farm['Название / Имя'] || '').toLowerCase().includes(q);
       if (!farmMatch) {
@@ -428,7 +455,8 @@ function render() {
     visibleFarms++;
 
     const isExpanded = expandedFarms.has(farmID);
-    const cropsToShow = (q && hiddenCrops.length > 0 && isExpanded) ? crops : visibleCrops;
+    const filterActive = !!(q || activeCategory);
+    const cropsToShow = (filterActive && hiddenCrops.length > 0 && isExpanded) ? crops : visibleCrops;
 
     const cropRowsHTML = cropsToShow.map(c => {
       const badge = seasonBadge(c['Сезон с'], c['Сезон по']);
@@ -444,7 +472,7 @@ function render() {
     }).join('');
 
     let hiddenNote = '';
-    if (q && hiddenCrops.length > 0) {
+    if (filterActive && hiddenCrops.length > 0) {
       hiddenNote = `<div class="hidden-note ${isExpanded ? 'expanded' : ''}" onclick="toggleHidden('${farmID}')">${isExpanded ? 'Скрыть' : 'Ещё ' + hiddenCrops.length + ' ' + cropWord(hiddenCrops.length) + ' от этого хозяйства'}<span class="chev">▾</span></div>`;
     }
 
