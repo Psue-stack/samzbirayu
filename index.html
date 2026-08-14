@@ -60,7 +60,6 @@
     .add-btn { background: var(--leaf); color: white; border-radius: 50px; padding: 9px 18px; font-size: .8rem; font-weight: 500; white-space: nowrap; transition: background .2s; }
     .add-btn:hover { background: var(--sage); }
     .hero-center { max-width: 560px; margin: 0 auto; text-align: center; }
-    .hero-tag { font-size: .7rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; }
     h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.9rem, 6vw, 2.8rem); color: var(--earth); line-height: 1.15; margin-bottom: 10px; }
     h1 em { font-style: italic; color: var(--leaf); }
     .hero-sub { font-size: .9rem; font-weight: 300; color: rgba(30,20,8,.55); margin-bottom: 22px; }
@@ -97,6 +96,9 @@
     .farm-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 500; color: var(--earth); }
     .farm-name.clickable { cursor: pointer; text-decoration: underline; text-decoration-color: rgba(59,109,17,.35); text-underline-offset: 3px; }
     .farm-name.clickable:hover { color: var(--leaf); }
+    /* Тип хозяйства (Ферма/КФХ) собирается в форме и хранится в таблице,
+       но на карточке не отображается. Стиль сохранён на случай добавления
+       фильтра по типу хозяйства в будущем. */
     .farm-badge { display: inline-block; background: var(--mist); color: #27500a; font-size: .62rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 2px 9px; border-radius: 50px; margin-bottom: 4px; }
     .farm-meta { font-size: .78rem; color: rgba(30,20,8,.45); display: flex; align-items: center; gap: 4px; }
     .farm-detail { display: none; padding: 14px 18px; background: var(--mist); border-bottom: 1px solid var(--border); font-size: .85rem; font-weight: 300; color: rgba(30,20,8,.75); line-height: 1.6; }
@@ -153,9 +155,8 @@
     <a href="dobavit.html" class="add-btn">+ Подать объявление</a>
   </nav>
   <div class="hero-center">
-    <div class="hero-tag">Самосбор</div>
     <h1>🌿 <em>Сам збіраю</em></h1>
-    <p class="hero-sub">Фермерские хозяйства, где можно самому собрать фрукты и овощи. Без посредников.</p>
+    <p class="hero-sub">Фермерские хозяйства, где можно самому собрать фрукты и овощи.<br/>Без посредников.</p>
     <div class="search-wrap">
       <input class="search-input" id="searchInput" type="text" placeholder="Что ищете?" oninput="handleSearch(this.value)" autocomplete="off" />
       <button class="search-clear" id="clearBtn" onclick="clearSearch()" aria-label="Сбросить поиск">✕</button>
@@ -268,7 +269,7 @@ const CATEGORIES = [
   { key: 'fruits',  label: 'Фрукты', icon: '🍎', crops: ['яблок', 'груш', 'слив'] },
   { key: 'veg',     label: 'Овощи', icon: '🥒', crops: ['огурц', 'помидор', 'томат', 'перец', 'кабачк', 'цукини', 'баклажан', 'тыкв', 'капуст', 'кольраб', 'свёкл', 'свекл', 'морков', 'картоф', 'топинамбур', 'редиск', 'лук', 'чеснок'] },
   { key: 'greens',  label: 'Зелень', icon: '🌿', crops: ['укроп', 'петрушк', 'руккол', 'салат', 'зелен'] },
-  { key: 'legumes', label: 'Бобовые', icon: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><path d="M12 2C8 2 5 5 5 10c0 7 4 12 7 12s7-5 7-12c0-5-3-8-7-8z" fill="#3B6D11"/><ellipse cx="9.5" cy="9" rx="1.9" ry="2.3" fill="#7AAB6E"/><ellipse cx="14" cy="13" rx="1.9" ry="2.3" fill="#7AAB6E"/><ellipse cx="10" cy="17" rx="1.7" ry="2.1" fill="#7AAB6E"/></svg>', crops: ['фасол', 'боб', 'горох'] }
+  { key: 'legumes', label: 'Бобовые', icon: '<svg width="14" height="14" viewBox="0 0 36 36" style="vertical-align:-2px"><path d="M4 18c0-5 6-8 14-8s14 3 14 8-6 8-14 8S4 23 4 18z" fill="#5FA832"/><path d="M4 18c0 5 6 8 14 8s14-3 14-8c0 2-6 4-14 4S4 20 4 18z" fill="#3B6D11"/><circle cx="10.5" cy="16.5" r="2.9" fill="#C5E39B"/><circle cx="18" cy="16.5" r="2.9" fill="#C5E39B"/><circle cx="25.5" cy="16.5" r="2.9" fill="#C5E39B"/></svg>', crops: ['фасол', 'боб', 'горох'] }
 ];
 
 function findCategory(cropName) {
@@ -472,7 +473,7 @@ function render() {
     if (tg)     contactBtns += `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">${ICONS.telegram} ${tg}</a>`;
     if (viber)  contactBtns += `<a href="viber://chat?number=${viber.replace(/\s/g,'')}" class="btn-contact">${ICONS.viber} ${viber}</a>`;
 
-    container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}</div>${farm['Тип хозяйства'] ? `<span class="farm-badge">${farm['Тип хозяйства']}</span>` : ''}${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>` : ''}${contactBtns}</div></article>`;
+    container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}</div>${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>` : ''}${contactBtns}</div></article>`;
   });
 
   // Count line: show "N хозяйств · Область" only when there are results;
@@ -552,12 +553,12 @@ function cropEmoji(name) {
   if (n.includes('редиск'))  return '🔴';
   if (n.includes('лук'))     return '🧅';
   if (n.includes('чеснок'))  return '🧄';
-  if (n.includes('фасол'))   return '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><ellipse cx="12" cy="12" rx="6.5" ry="3.2" fill="#C2560A"/><circle cx="8.2" cy="12" r="1.6" fill="#FAEEDA"/><circle cx="12" cy="12" r="1.6" fill="#FAEEDA"/><circle cx="15.8" cy="12" r="1.6" fill="#FAEEDA"/></svg>';
-  if (n.includes('боб'))     return '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><ellipse cx="12" cy="12" rx="6.5" ry="3.2" fill="#C2560A"/><circle cx="8.2" cy="12" r="1.6" fill="#FAEEDA"/><circle cx="12" cy="12" r="1.6" fill="#FAEEDA"/><circle cx="15.8" cy="12" r="1.6" fill="#FAEEDA"/></svg>';
-  if (n.includes('горох'))   return '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><ellipse cx="12" cy="12" rx="6.5" ry="3.2" fill="#3B6D11"/><circle cx="8.2" cy="12" r="1.6" fill="#EAF3DE"/><circle cx="12" cy="12" r="1.6" fill="#EAF3DE"/><circle cx="15.8" cy="12" r="1.6" fill="#EAF3DE"/></svg>';
+  if (n.includes('фасол'))   return '<svg width="14" height="14" viewBox="0 0 36 36" style="vertical-align:-2px"><path d="M4 18c0-5 6-8 14-8s14 3 14 8-6 8-14 8S4 23 4 18z" fill="#E07B2A"/><path d="M4 18c0 5 6 8 14 8s14-3 14-8c0 2-6 4-14 4S4 20 4 18z" fill="#C2560A"/><ellipse cx="10.5" cy="16.5" rx="3" ry="2.6" fill="#FBE3C4"/><ellipse cx="18" cy="16.5" rx="3" ry="2.6" fill="#FBE3C4"/><ellipse cx="25.5" cy="16.5" rx="3" ry="2.6" fill="#FBE3C4"/></svg>';
+  if (n.includes('боб'))     return '<svg width="14" height="14" viewBox="0 0 36 36" style="vertical-align:-2px"><path d="M4 18c0-5 6-8 14-8s14 3 14 8-6 8-14 8S4 23 4 18z" fill="#E07B2A"/><path d="M4 18c0 5 6 8 14 8s14-3 14-8c0 2-6 4-14 4S4 20 4 18z" fill="#C2560A"/><ellipse cx="10.5" cy="16.5" rx="3" ry="2.6" fill="#FBE3C4"/><ellipse cx="18" cy="16.5" rx="3" ry="2.6" fill="#FBE3C4"/><ellipse cx="25.5" cy="16.5" rx="3" ry="2.6" fill="#FBE3C4"/></svg>';
+  if (n.includes('горох'))   return '<svg width="14" height="14" viewBox="0 0 36 36" style="vertical-align:-2px"><path d="M4 18c0-5 6-8 14-8s14 3 14 8-6 8-14 8S4 23 4 18z" fill="#5FA832"/><path d="M4 18c0 5 6 8 14 8s14-3 14-8c0 2-6 4-14 4S4 20 4 18z" fill="#3B6D11"/><circle cx="10.5" cy="16.5" r="2.9" fill="#C5E39B"/><circle cx="18" cy="16.5" r="2.9" fill="#C5E39B"/><circle cx="25.5" cy="16.5" r="2.9" fill="#C5E39B"/></svg>';
   if (n.includes('рукол'))   return '🌿';
   if (n.includes('салат'))   return '🥗';
-  if (n.includes('укроп'))   return '<svg width="14" height="14" viewBox="0 0 36 36" style="vertical-align:-2px"><path d="M18 33c0-8 0-15 0-21" stroke="#2E7D32" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M18 12c-2.5-3-2.5-6.5 0-10M18 12c2.5-2.5 5-3.5 7.5-2.5M18 16.5c-2.5 1.8-5.5 1-7.5-1.5M18 21c2.5-1.8 5.5-1 7.5 1.5M18 25.5c-2.5 1-5 .5-6.5-1.8" stroke="#388E3C" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>';
+  if (n.includes('укроп'))   return '<svg width="14" height="14" viewBox="0 0 36 36" style="vertical-align:-2px"><path d="M18 34V14" stroke="#2E7D32" stroke-width="3" stroke-linecap="round" fill="none"/><ellipse cx="11" cy="12" rx="6.5" ry="4" fill="#43A047" transform="rotate(-28 11 12)"/><ellipse cx="25" cy="12" rx="6.5" ry="4" fill="#66BB6A" transform="rotate(28 25 12)"/><ellipse cx="12" cy="21" rx="5.5" ry="3.4" fill="#388E3C" transform="rotate(-22 12 21)"/><ellipse cx="24" cy="21" rx="5.5" ry="3.4" fill="#5CB860" transform="rotate(22 24 21)"/><ellipse cx="18" cy="7" rx="4.5" ry="5" fill="#4CAF50"/></svg>';
   if (n.includes('петрушк')) return '🌿';
   if (n.includes('зелен'))   return '🌿';
   return '🌱';
