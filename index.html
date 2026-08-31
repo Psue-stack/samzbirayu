@@ -234,8 +234,29 @@ function seasonBadge(from, to) {
   return `<span class="season-badge ${cls}"><span class="season-dot"></span>${s.label}</span>`;
 }
 
-function mapIcon(type) {
-  return type && type.toLowerCase().includes('яндекс') ? ICONS.yandex : ICONS.googlemaps;
+// Хозяйство может вставить ссылку без «https://» — при копировании
+// с телефона префикс часто теряется. Без него браузер считает адрес
+// относительным и кнопка ведёт в никуда, поэтому дописываем префикс сами.
+function normalizeMapUrl(url) {
+  const u = String(url || '').trim();
+  if (!u) return '';
+  if (/^https?:\/\//i.test(u)) return u;
+  return 'https://' + u.replace(/^\/+/, '');
+}
+
+
+// Определяем сервис карт по САМОЙ ССЫЛКЕ, а не по отдельному полю.
+// Так исключено расхождение: раньше хозяйство могло выбрать «Google Maps»,
+// но вставить ссылку на Яндекс — и кнопка показывала не тот значок.
+function mapProvider(url) {
+  const u = String(url || '').toLowerCase();
+  if (u.indexOf('yandex') >= 0 || u.indexOf('ya.ru') >= 0) {
+    return { label: 'Яндекс Карты', icon: ICONS.yandex };
+  }
+  if (u.indexOf('google') >= 0 || u.indexOf('goo.gl') >= 0) {
+    return { label: 'Google Maps', icon: ICONS.googlemaps };
+  }
+  return { label: 'Карта', icon: ICONS.genericmap };
 }
 
 function convertPhotoUrl(url) {
@@ -264,6 +285,7 @@ const ICONS = {
   viber: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><circle cx="12" cy="12" r="12" fill="#7B519D"/><path fill="#fff" d="M16.5 14.4l-1.8-.9a1 1 0 0 0-1.1.2l-.5.5a8 8 0 0 1-3.3-3.3l.5-.5a1 1 0 0 0 .2-1.1l-.9-1.8a1 1 0 0 0-1.2-.5 3.6 3.6 0 0 0-2.4 3.4c0 4.4 3.6 8 8 8a3.6 3.6 0 0 0 3.4-2.4 1 1 0 0 0-.5-1.2z"/><path fill="none" stroke="#fff" stroke-width=".9" stroke-linecap="round" d="M13.2 6.8a4 4 0 0 1 3 3M14.1 4.6a6.4 6.4 0 0 1 5 5"/></svg>',
   yandex: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><circle cx="12" cy="12" r="12" fill="#FC3F1D"/><text x="12" y="17" font-size="13" font-weight="700" fill="#fff" text-anchor="middle" font-family="Arial, sans-serif">Я</text></svg>',
   googlemaps: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><path fill="#4285F4" d="M12 2C7.58 2 4 5.58 4 10c0 5.25 6.5 11.5 7.3 12.25a1 1 0 0 0 1.4 0C13.5 21.5 20 15.25 20 10c0-4.42-3.58-8-8-8z"/><circle cx="12" cy="10" r="3.2" fill="#fff"/></svg>',
+  genericmap: '<svg width="14" height="14" viewBox="0 0 24 24" style="vertical-align:-2px"><path fill="#5c3d1e" d="M12 2C7.58 2 4 5.58 4 10c0 5.25 6.5 11.5 7.3 12.25a1 1 0 0 0 1.4 0C13.5 21.5 20 15.25 20 10c0-4.42-3.58-8-8-8z"/><circle cx="12" cy="10" r="3.2" fill="#fff"/></svg>',
   phone: '<svg width="14" height="14" viewBox="0 0 24 24" fill="#3B6D11" style="vertical-align:-2px"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>'
 };
 
@@ -482,8 +504,8 @@ function render() {
       ? `<img src="${photoUrl}" alt="${farm['Название / Имя']}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='${photoEmoji(farm['Тип хозяйства'])}'"/>`
       : photoEmoji(farm['Тип хозяйства']);
 
-    const mapLabel = farm['Тип карты'] || 'Карта';
-    const mapLink  = farm['Ссылка на карту'] || '#';
+    const mapLink  = normalizeMapUrl(farm['Ссылка на карту']) || '#';
+    const mapInfo  = mapProvider(mapLink);
     const phone    = farm['Телефон'] || '';
     const tg       = farm['Telegram'] || '';
     const viber    = farm['Viber'] || '';
@@ -501,7 +523,7 @@ function render() {
     if (tg)     contactBtns += `<a href="https://t.me/${tg.replace('@','')}" target="_blank" rel="noopener" class="btn-contact">${ICONS.telegram} ${tg}</a>`;
     if (viber)  contactBtns += `<a href="viber://chat?number=${viber.replace(/\s/g,'')}" class="btn-contact">${ICONS.viber} ${viber}</a>`;
 
-    container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}</div>${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapIcon(mapLabel)} ${mapLabel}</a>` : ''}${contactBtns}</div></article>`;
+    container.innerHTML += `<article class="farm-card"><div class="farm-header"><div class="farm-photo">${photo}</div><div class="farm-info"><div class="farm-name-row">${nameHTML}</div>${dist ? `<div class="farm-meta">📍 ${dist} от центра Минска</div>` : ''}</div></div>${detailHTML}<div class="crop-list">${cropRowsHTML}</div>${hiddenNote}<div class="farm-footer">${mapLink && mapLink !== '#' ? `<a href="${mapLink}" target="_blank" rel="noopener" class="btn-map">${mapInfo.icon} ${mapInfo.label}</a>` : ''}${contactBtns}</div></article>`;
   });
 
   // Count line: show "N хозяйств · Область" only when there are results;
