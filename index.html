@@ -142,6 +142,9 @@
     /* Области, где объявления есть — по одному нажатию переходим туда */
     .oblast-suggest { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
     .oblast-suggest:empty { display: none; }
+    /* Одна область — подпись и кнопка в одну строку */
+    .oblast-suggest.inline { align-items: center; margin-top: 0; }
+    .oblast-suggest .suggest-label { font-size: .95rem; color: rgba(30,20,8,.5); }
     .oblast-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 50px; border: 1px solid rgba(59,109,17,.4); background: var(--mist); color: #27500a; font-size: .82rem; font-weight: 500; transition: all .18s; }
     .oblast-btn:hover { background: var(--leaf); border-color: var(--leaf); color: white; }
     .oblast-btn .cnt { font-size: .72rem; opacity: .75; }
@@ -379,14 +382,15 @@ function matchingFarmCountInOblast(oblast, matcher) {
 /**
  * Готовит подсказки «объявления есть здесь» для пустого состояния.
  * Возвращает список областей (кроме текущей), где есть подходящие
- * объявления, от большего количества к меньшему.
+ * объявления, по алфавиту — порядок предсказуем, а количество
+ * и так видно на каждой кнопке.
  */
 function suggestedOblasts(matcher) {
   return OBLASTS
     .filter(o => o !== activeOblast)
     .map(o => ({ oblast: o, count: matchingFarmCountInOblast(o, matcher) }))
     .filter(x => x.count > 0)
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) => a.oblast.localeCompare(b.oblast, 'ru'));
 }
 function chooseDefaultOblast() {
   let best = DEFAULT_OBLAST, bestCount = -1;
@@ -654,23 +658,41 @@ function render() {
   } else {
     emptyState.classList.remove('visible');
     esug.innerHTML = '';
+    esug.classList.remove('inline');
+    esub.style.display = '';
   }
 }
 
 
 /**
  * Рисует кнопки областей, где есть подходящие объявления.
- * Если таких областей нет — кнопок не будет, останется обычный текст.
+ *
+ * Одна область — подпись и кнопка в одну строку: читается как фраза.
+ * Несколько — подпись отдельной строкой, кнопки под ней, иначе подпись
+ * теряется среди кнопок и перенос выглядит неровно.
+ * Нет подходящих областей — кнопок не будет, останется обычный текст.
  */
 function renderOblastSuggestions(container, subEl, matcher) {
   const list = suggestedOblasts(matcher);
+
+  container.classList.remove('inline');
+  subEl.style.display = '';
+
   if (!list.length) { container.innerHTML = ''; return; }
 
-  subEl.textContent = 'Объявления есть здесь:';
-  container.innerHTML = list.map(x =>
+  const btn = x =>
     `<button class="oblast-btn" onclick="jumpToOblast('${x.oblast}')">` +
-    `${x.oblast}<span class="cnt">${x.count}</span></button>`
-  ).join('');
+    `${x.oblast}<span class="cnt">${x.count}</span></button>`;
+
+  if (list.length === 1) {
+    subEl.style.display = 'none';
+    container.classList.add('inline');
+    container.innerHTML =
+      '<span class="suggest-label">Объявления есть здесь:</span>' + btn(list[0]);
+  } else {
+    subEl.textContent = 'Объявления есть здесь:';
+    container.innerHTML = list.map(btn).join('');
+  }
 }
 
 
