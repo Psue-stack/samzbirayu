@@ -359,8 +359,17 @@ function chooseDefaultOblast() {
 async function loadData() {
   try {
     const [farms, crops] = await Promise.all([fetchSheet(FARMS_URL), fetchSheet(CROPS_URL)]);
-    allFarms = farms.filter(f => String(f['Одобрено']).toUpperCase() === 'TRUE');
-    allCrops = crops.filter(c => String(c['Одобрено']).toUpperCase() === 'TRUE');
+    // Столбец «Показывать» управляет тем, что видно на сайте.
+    // Старое название «Одобрено» тоже принимаем — на случай, если
+    // переименование ещё не применено в таблице.
+    const isVisible = r => {
+      const v = (r['Показывать'] !== undefined && r['Показывать'] !== '')
+        ? r['Показывать']
+        : r['Одобрено'];
+      return String(v).toUpperCase() === 'TRUE';
+    };
+    allFarms = farms.filter(isVisible);
+    allCrops = crops.filter(isVisible);
     document.getElementById('loadingState').classList.remove('visible');
     // Pick smart default oblast and sync the dropdown
     activeOblast = chooseDefaultOblast();
