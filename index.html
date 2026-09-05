@@ -78,6 +78,9 @@
     .cat-tabs { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
     .cat-tab { padding: 8px 18px; border-radius: 50px; border: 1px solid var(--border); background: var(--cream); font-size: .8rem; font-weight: 500; color: var(--earth); white-space: nowrap; transition: all .18s; }
     .cat-tab:hover, .cat-tab.active { background: var(--leaf); border-color: var(--leaf); color: white; }
+    /* Категория без активных культур в выбранной области */
+    .cat-tab.disabled { opacity: .35; cursor: default; }
+    .cat-tab.disabled:hover { background: var(--cream); border-color: var(--border); color: var(--earth); }
     .chips-wrap { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
     .chips-wrap:empty { margin-top: 0; }
     .chip { padding: 7px 16px; border-radius: 50px; border: 1px solid var(--border); background: var(--mist); color: #27500a; font-size: .78rem; white-space: nowrap; transition: all .18s; }
@@ -136,6 +139,12 @@
     .state-icon { font-size: 2.5rem; margin-bottom: 12px; }
     .state-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 8px; }
     .state-sub { font-size: .95rem; color: rgba(30,20,8,.5); margin-bottom: 20px; }
+    /* Области, где объявления есть — по одному нажатию переходим туда */
+    .oblast-suggest { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .oblast-suggest:empty { display: none; }
+    .oblast-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 50px; border: 1px solid rgba(59,109,17,.4); background: var(--mist); color: #27500a; font-size: .82rem; font-weight: 500; transition: all .18s; }
+    .oblast-btn:hover { background: var(--leaf); border-color: var(--leaf); color: white; }
+    .oblast-btn .cnt { font-size: .72rem; opacity: .75; }
     .loading-spinner { width: 36px; height: 36px; border: 3px solid var(--mist); border-top-color: var(--leaf); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .site-footer { background: white; border-top: 1px solid var(--border); color: rgba(30,20,8,.45); text-align: center; padding: 24px 20px; font-size: .78rem; font-weight: 300; }
@@ -190,6 +199,7 @@
     <div class="state-icon" id="emptyStateIcon">🌱</div>
     <p class="state-title" id="emptyStateTitle">Ничего не найдено</p>
     <p class="state-sub" id="emptyStateSub">Выберите другую область</p>
+    <div class="oblast-suggest" id="oblastSuggest"></div>
   </div>
   <div id="farmsContainer"></div>
 </main>
@@ -343,7 +353,41 @@ function activeFarmCountInOblast(oblast) {
   }).length;
 }
 
-// Choose default oblast: the one with most active farms; ties or all-empty → Минская область
+
+/**
+ * Сколько хозяйств в данной области подходят под текущий контекст.
+ *
+ * matcher — необязательная функция проверки культуры. Если она задана,
+ * считаются только хозяйства, у которых есть подходящая культура.
+ * Так подсказка отвечает на реальный вопрос покупателя: не «где вообще
+ * что-то есть», а «где есть именно клубника».
+ */
+function matchingFarmCountInOblast(oblast, matcher) {
+  return farmsInOblast(oblast).filter(farm => {
+    const farmID = String(farm['FermaID'] || '').trim();
+    const crops = allCrops.filter(c => {
+      if (String(c['FermaID'] || '').trim() !== farmID) return false;
+      const s = seasonStatus(c['Сезон с'], c['Сезон по']);
+      if (s && s.type === 'expired') return false;
+      return matcher ? matcher(c) : true;
+    });
+    return crops.length > 0;
+  }).length;
+}
+
+
+/**
+ * Готовит подсказки «объявления есть здесь» для пустого состояния.
+ * Возвращает список областей (кроме текущей), где есть подходящие
+ * объявления, от большего количества к меньшему.
+ */
+function suggestedOblasts(matcher) {
+  return OBLASTS
+    .filter(o => o !== activeOblast)
+    .map(o => ({ oblast: o, count: matchingFarmCountInOblast(o, matcher) }))
+    .filter(x => x.count > 0)
+    .sort((a, b) => b.count - a.count);
+}
 function chooseDefaultOblast() {
   let best = DEFAULT_OBLAST, bestCount = -1;
   // Check Минская first so it wins ties naturally
@@ -417,16 +461,46 @@ function renderFilters() {
   const catTabsEl = document.getElementById('catTabs');
   const chipsEl = document.getElementById('chipsWrap');
   const filtersEmptyEl = document.getElementById('filtersEmpty');
-  const activeCrops = getActiveCrops();
-  if (activeCrops.length === 0) { catTabsEl.innerHTML = ''; chipsEl.innerHTML = ''; filtersEmptyEl.classList.remove('visible'); return; }
   filtersEmptyEl.classList.remove('visible');
-  const categoriesPresent = CATEGORIES.filter(cat => activeCrops.some(c => findCategory(c['Культура']) === cat));
-  catTabsEl.innerHTML = categoriesPresent.map(cat => `<button class="cat-tab ${activeCategory === cat.key ? 'active' : ''}" onclick="pickCategory('${cat.key}')">${cat.icon} ${cat.label}</button>`).join('');
-  if (activeCategory && !categoriesPresent.some(c => c.key === activeCategory)) { activeCategory = ''; activeCrop = ''; }
+
+  // Что реально есть в выбранной области — независимо от поиска.
+  // Именно наличие в области определяет, какие категории активны:
+  // после неудачного поиска покупатель видит, куда ещё можно перейти.
+  const oblastCrops = getActiveCrops();
+  const availableKeys = new Set(
+    CATEGORIES
+      .filter(cat => oblastCrops.some(c => findCategory(c['Культура']) === cat))
+      .map(cat => cat.key)
+  );
+
+  // Все пять категорий показываем всегда — панель не «скачет» по ширине.
+  // Категории без активных культур приглушены и не нажимаются.
+  catTabsEl.innerHTML = CATEGORIES.map(cat => {
+    const has = availableKeys.has(cat.key);
+    const isActive = activeCategory === cat.key;
+    const cls = 'cat-tab' + (isActive ? ' active' : '') + (has ? '' : ' disabled');
+    const onclick = has ? ` onclick="pickCategory('${cat.key}')"` : '';
+    const attrs = has ? '' : ' disabled aria-disabled="true"';
+    return `<button class="${cls}"${onclick}${attrs}>${cat.icon} ${cat.label}</button>`;
+  }).join('');
+
+  // Если выбранная категория больше недоступна — снимаем выбор
+  if (activeCategory && !availableKeys.has(activeCategory)) {
+    activeCategory = ''; activeCrop = '';
+  }
+
+  // Чипы культур — только для выбранной категории и только те, что есть
   if (!activeCategory) { chipsEl.innerHTML = ''; return; }
-  const cat = categoriesPresent.find(c => c.key === activeCategory);
-  const cropNames = [...new Set(activeCrops.filter(c => findCategory(c['Культура']) === cat).map(c => (c['Культура'] || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ru'));
-  chipsEl.innerHTML = cropNames.map(name => `<button class="chip ${activeCrop === name.toLowerCase() ? 'active' : ''}" onclick="pickCrop('${name.toLowerCase().replace(/'/g, "\\'")}')">${cropEmoji(name)} ${name}</button>`).join('');
+  const cat = CATEGORIES.find(c => c.key === activeCategory);
+  const cropNames = [...new Set(
+    oblastCrops
+      .filter(c => findCategory(c['Культура']) === cat)
+      .map(c => (c['Культура'] || '').trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, 'ru'));
+  chipsEl.innerHTML = cropNames.map(name =>
+    `<button class="chip ${activeCrop === name.toLowerCase() ? 'active' : ''}" onclick="pickCrop('${name.toLowerCase().replace(/'/g, "\\'")}')">${cropEmoji(name)} ${name}</button>`
+  ).join('');
 }
 
 function pickCategory(key) {
@@ -548,26 +622,72 @@ function render() {
   const et    = document.getElementById('emptyStateTitle');
   const esub  = document.getElementById('emptyStateSub');
   const eicon = document.getElementById('emptyStateIcon');
+  const esug  = document.getElementById('oblastSuggest');
 
   if (visibleFarms === 0) {
     const searchActive = !!(q || activeCrop || activeCategory);
+
+    // Подсказка зависит от того, что искал покупатель:
+    //  • искал культуру  → где есть именно она
+    //  • выбрал категорию → где есть эта категория
+    //  • просто пустая область → где есть хоть что-то
+    let matcher = null;
+    if (q) {
+      matcher = c => (c['Культура'] || '').toLowerCase().indexOf(q) >= 0;
+    } else if (activeCategory) {
+      const cat = CATEGORIES.find(c => c.key === activeCategory);
+      matcher = c => findCategory(c['Культура']) === cat;
+    }
+
     if (searchActive) {
-      // Situation B — a search/filter found nothing in this oblast.
-      // Category tabs stay visible above, and the ✕ clears the search,
-      // so no separate reset button is needed here.
       et.textContent = 'Данный продукт в настоящее время отсутствует';
       esub.textContent = 'Хотите поискать что-то другое?';
       eicon.textContent = '🔍';
     } else {
-      // Situation A — the whole oblast is empty
       et.textContent = `В ${oblastPrepositional(activeOblast)} пока нет объявлений`;
       esub.textContent = 'Выберите другую область';
       eicon.textContent = '🍒';
     }
+
+    renderOblastSuggestions(esug, esub, matcher);
     emptyState.classList.add('visible');
   } else {
     emptyState.classList.remove('visible');
+    esug.innerHTML = '';
   }
+}
+
+
+/**
+ * Рисует кнопки областей, где есть подходящие объявления.
+ * Если таких областей нет — кнопок не будет, останется обычный текст.
+ */
+function renderOblastSuggestions(container, subEl, matcher) {
+  const list = suggestedOblasts(matcher);
+  if (!list.length) { container.innerHTML = ''; return; }
+
+  subEl.textContent = 'Объявления есть здесь:';
+  container.innerHTML = list.map(x =>
+    `<button class="oblast-btn" onclick="jumpToOblast('${x.oblast}')">` +
+    `${x.oblast}<span class="cnt">${x.count}</span></button>`
+  ).join('');
+}
+
+
+/**
+ * Переход в другую область из пустого состояния.
+ *
+ * Контекст сохраняем: если покупатель искал клубнику, кнопка обещала
+ * «клубника есть в Гродненской области» — значит, туда он и должен
+ * попасть, а не на весь список области.
+ */
+function jumpToOblast(oblast) {
+  activeOblast = oblast;
+  document.getElementById('oblastSelect').value = oblast;
+  expandedFarms.clear();
+  renderFilters();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Convert oblast name from nominative to prepositional case for the message
