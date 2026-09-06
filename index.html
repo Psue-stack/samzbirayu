@@ -110,8 +110,16 @@
     .farm-detail { display: none; padding: 14px 18px; background: var(--mist); border-bottom: 1px solid var(--border); font-size: .85rem; font-weight: 300; color: rgba(30,20,8,.75); line-height: 1.6; }
     .farm-detail.open { display: block; }
     .crop-list { display: flex; flex-direction: column; }
-    .crop-row { padding: 11px 18px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
+    .crop-row { padding: 11px 18px; border-bottom: 1px solid var(--border); }
     .crop-row:last-child { border-bottom: none; }
+    /* Слева — название, расписание и бейдж сезона. Справа — цена и фото. */
+    .crop-main { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .crop-info { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .crop-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .crop-photo { width: 52px; height: 52px; border-radius: var(--radius-sm); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--mist); font-size: 1.35rem; }
+    .crop-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* Нет фото — пунктирная рамка со значком культуры */
+    .crop-photo.empty { background: var(--cream); border: 1px dashed var(--border); }
     .crop-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .crop-name { font-size: .92rem; font-weight: 500; color: var(--earth); display: flex; align-items: center; gap: 6px; }
     .crop-price { font-size: .82rem; color: var(--bark); white-space: nowrap; flex-shrink: 0; }
@@ -577,7 +585,27 @@ function render() {
       const sched = schedParts.join(' · ');
       const priceDetail = c['Цена (подробнее)'] || '';
       const priceStr = priceDetail ? priceDetail : (c['Условия оплаты'] || '');
-      return `<div class="crop-row"><div class="crop-top"><span class="crop-name">${cropEmoji(c['Культура'])} ${c['Культура'] || ''}</span><span class="crop-price">${priceStr}</span></div>${sched ? `<div class="crop-meta">🕐 ${sched}</div>` : ''}${badge}</div>`;
+      // Фото культуры — справа, рядом с ценой.
+      // Если ссылки нет или картинка не загрузилась — значок культуры.
+      const cropPhotoUrl = convertPhotoUrl(c['Фото'] || '');
+      const cropIcon = cropEmoji(c['Культура']);
+      const cropPhoto = cropPhotoUrl
+        ? `<div class="crop-photo"><img src="${cropPhotoUrl}" alt="${c['Культура'] || ''}" loading="lazy" onerror="this.parentElement.classList.add('empty');this.parentElement.innerHTML='${cropIcon.replace(/'/g, "\\'")}'"/></div>`
+        : `<div class="crop-photo empty">${cropIcon}</div>`;
+
+      return `<div class="crop-row">` +
+        `<div class="crop-main">` +
+          `<div class="crop-info">` +
+            `<span class="crop-name">${cropIcon} ${c['Культура'] || ''}</span>` +
+            `${sched ? `<div class="crop-meta">🕐 ${sched}</div>` : ''}` +
+            `${badge}` +
+          `</div>` +
+          `<div class="crop-right">` +
+            `<span class="crop-price">${priceStr}</span>` +
+            `${cropPhoto}` +
+          `</div>` +
+        `</div>` +
+      `</div>`;
     }).join('');
 
     let hiddenNote = '';
@@ -585,11 +613,9 @@ function render() {
       hiddenNote = `<div class="hidden-note ${isExpanded ? 'expanded' : ''}" onclick="toggleHidden('${farmID}')">${isExpanded ? 'Скрыть' : 'Ещё ' + hiddenCrops.length + ' ' + cropWord(hiddenCrops.length) + ' от этого хозяйства'}<span class="chev">▾</span></div>`;
     }
 
-    const rawPhotoUrl = farm['Фото (URL)'] || '';
-    const photoUrl = convertPhotoUrl(rawPhotoUrl);
-    const photo = photoUrl
-      ? `<img src="${photoUrl}" alt="${farm['Название / Имя']}" loading="lazy" onerror="this.style.display='none';this.parentElement.textContent='${photoEmoji(farm['Тип хозяйства'])}'"/>`
-      : photoEmoji(farm['Тип хозяйства']);
+    // В шапке всегда значок типа хозяйства: фотографии теперь у культур,
+    // отдельного фото хозяйства нет.
+    const photo = photoEmoji(farm['Тип хозяйства']);
 
     const mapLink  = normalizeMapUrl(farm['Ссылка на карту']) || '#';
     const mapInfo  = mapProvider(mapLink);
